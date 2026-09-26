@@ -26,10 +26,12 @@ import { Brand } from "./brand";
 import { Timeline } from "./timeline";
 import { PlanCard } from "./plan-card";
 import { Review } from "./review";
+import { Copilot } from "./copilot";
 type ResponseData = {
   state: Omit<TripState, "requests">;
   recovery: Recovery;
   quote: string;
+  persistence?: "browser-session" | "local-server";
 };
 const scenarios = [
   {
@@ -78,7 +80,7 @@ export default function Workspace() {
     return () => controller.abort();
   }, []);
   async function mutate(command: Record<string, unknown>) {
-    if (!data || busy) return;
+    if (!data || busy) return false;
     setBusy(true);
     setError("");
     try {
@@ -100,14 +102,16 @@ export default function Workspace() {
       setSelected(null);
       setScenarioMenu(false);
       if (command.action === "scenario") setView("recovery");
-      if (command.action === "reset" || command.action === "apply")
+      if (["reset", "apply", "copilot"].includes(String(command.action)))
         navigate("recovery");
+      return true;
     } catch (e) {
       setError(
         e instanceof Error
           ? e.message
           : "Connection interrupted. Retry the action.",
       );
+      return false;
     } finally {
       setBusy(false);
     }
@@ -279,8 +283,18 @@ export default function Workspace() {
           </ol>
           <span className="provenance">
             <FlaskConical size={13} /> Fictional trip · No real bookings
+            {data?.persistence === "browser-session"
+              ? " · Saved in this browser"
+              : ""}
           </span>
         </div>
+        {state && !applied && (
+          <Copilot
+            scenario={state.scenario}
+            busy={busy}
+            onApply={(draft) => mutate({ action: "copilot", ...draft })}
+          />
+        )}
         <nav className="mobile-tabs" aria-label="Workspace sections">
           <button
             aria-pressed={view === "recovery"}

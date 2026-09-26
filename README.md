@@ -29,11 +29,11 @@ If the machine's global npm 11.0 fails during install, use `npx npm@11.11.0 ci` 
 
 Next.js App Router + React + TypeScript + Zod. Pure engine in `src/engine`; fixture catalog in `src/fixtures`; HTTP contract in `src/domain/requests.ts`; local repository in `src/repositories`; UI in `src/components`.
 
-`GET /api/trip` loads the browser's session. `POST /api/trip` accepts scenario, preferences, apply and reset commands with an expected revision. Applying regenerates and validates the chosen plan on the server. A signed review expires after ten minutes.
+`GET /api/trip` loads the browser's session. `POST /api/trip` accepts scenario, preferences, copilot preview confirmation, apply and reset commands with an expected revision. Applying regenerates and validates the chosen plan on the server. A signed review expires after ten minutes.
 
-Everything involving schedules, fares, policies and inventory is **authored fixture data**. The fixed scenario clock is 26 September 2026 at 09:00 IST. There is no live booking or refund execution, live weather or LLM integration yet. No algorithmic global-optimum claim is made.
+Everything involving schedules, fares, policies and inventory is **authored fixture data**. The fixed scenario clock is 26 September 2026 at 09:00 IST. There is no live booking or refund execution, live weather or real LLM integration. The copilot replays three explicitly labeled authored requests, with real deterministic feasibility checks. No algorithmic global-optimum claim is made.
 
-Persistence is `.raahi/` JSON, ignored by Git, with serialized transactions and atomic file replacement. Run **one Node process on persistent storage**. Do not deploy this repository unchanged to an ephemeral serverless filesystem or multiple processes. Set `RAAHI_DATA_DIR` to an absolute persistent directory if needed and `RAAHI_HTTPS=true` behind HTTPS. Demo cookies are HttpOnly and SameSite Strict; this is not production account authentication. Restarting the server invalidates outstanding review signatures; refresh the browser before applying.
+Local persistence uses `.raahi/` JSON, ignored by Git, with serialized transactions and atomic file replacement in one Node process. Vercel automatically uses encrypted HTTP-only browser-session cookies instead, so no ephemeral filesystem writes are needed. Set a stable `RAAHI_SIGNING_SECRET` before hosting. Hosted sessions are individual demos, not collaborative database records; concurrent serverless requests have no transactional database guarantee. See [hosting and demo instructions](docs/HOSTING.md).
 
 ## Project documents
 

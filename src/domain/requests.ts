@@ -2,6 +2,15 @@ import { z } from "zod";
 const revision = z.number().int().positive();
 export const commandSchema = z.discriminatedUnion("action", [
   z.object({
+    action: z.literal("copilot"),
+    expectedRevision: revision,
+    scenario: z.enum(["delay", "activity-cancelled", "delay-later-cancelled"]),
+    preferences: z.object({
+      protectOriginal: z.boolean(),
+      budget: z.number().int().min(0).max(10000000),
+    }),
+  }),
+  z.object({
     action: z.literal("scenario"),
     expectedRevision: revision,
     scenario: z.enum([
