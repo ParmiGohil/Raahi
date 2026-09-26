@@ -26,7 +26,12 @@ export async function GET() {
 }
 export async function POST(request: NextRequest) {
   const origin = request.headers.get('origin');
-  if (origin && origin !== request.nextUrl.origin) return json({ error: 'Cross-origin writes are not allowed.' }, 403);
+  // Next may normalize nextUrl to localhost; compare the browser Origin with the actual Host.
+  if (origin) {
+    let sameHost = false;
+    try { sameHost = new URL(origin).host === request.headers.get('host'); } catch {}
+    if (!sameHost) return json({ error: 'Cross-origin writes are not allowed.' }, 403);
+  }
   if (!request.headers.get('content-type')?.includes('application/json')) return json({ error: 'JSON required.' }, 415);
   try {
     const raw = await request.text();

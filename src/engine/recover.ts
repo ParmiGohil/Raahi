@@ -27,7 +27,7 @@ export function evaluateImpacts(timeline: Segment[]): Impact[] {
     else if (badParent) { state = 'blocked'; reason = `Depends on ${timeline.find(s => s.id === badParent.id)?.title}; that part of the journey needs repair.`; }
     else if (slack !== undefined && slack < 0) { state = 'blocked'; reason = `Ready at ${time(parent!.end)}, after ${time(segment.cutoff ?? segment.start)} ${segment.cutoff ? 'cutoff' : 'start'} (${Math.abs(slack)} min late).`; }
     else if (before && (segment.start !== before.start || segment.end !== before.end)) { state = 'direct'; reason = `Schedule changed: ends ${time(segment.end)} instead of ${time(before.end)}.`; }
-    else if (slack !== undefined && slack < 30) { state = 'at-risk'; reason = `${slack} min between services; below the authored 30 min advisory buffer. Still feasible.`; }
+    else if (slack !== undefined && slack < 30 && (segment.cutoff || segment.id === 'pickup')) { state = 'at-risk'; reason = `${slack} min between services; below the authored 30 min advisory buffer. Still feasible.`; }
     result.push({ id: segment.id, state, reason, causes: segment.requires, slack });
   }
   return result;
