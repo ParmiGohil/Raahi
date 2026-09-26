@@ -5,7 +5,7 @@ import {
   Music2,
   Luggage,
   Footprints,
-  ArrowUpRight,
+  ChevronDown,
 } from "lucide-react";
 import type { Impact, Segment } from "../domain/types";
 import { time } from "../engine/recover";
@@ -54,10 +54,14 @@ export function Timeline({
                 <div>
                   <strong>{segment.title}</strong>
                   <span className={`status ${state}`}>
-                    {applied ? "Updated itinerary" : labels[state]}
+                    {applied
+                      ? segment.id === "walk"
+                        ? "Unchanged"
+                        : "In your revised plan"
+                      : labels[state]}
                   </span>
                 </div>
-                <ArrowUpRight size={14} />
+                <ChevronDown size={14} className="disclosure-chevron" />
               </summary>
               <p>{applied ? segment.evidence : impact?.reason}</p>
               <p className="muted">

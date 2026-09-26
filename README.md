@@ -38,6 +38,7 @@ Persistence is `.raahi/` JSON, ignored by Git, with serialized transactions and 
 ## Project documents
 
 - [Current implementation status](CURRENT_STATUS.md)
+- [UI design system and artwork prompt](docs/DESIGN_SYSTEM.md)
 - [Ordered implementation milestones](docs/IMPLEMENTATION_PLAN.md)
 - [Canonical research roadmap](HACKATHON_ROADMAP.md)
 - [Build handoff](docs/BUILD_HANDOFF.md)

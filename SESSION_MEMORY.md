@@ -88,3 +88,7 @@ Next milestones: persistent public hosting, submission assets, and gated optiona
 ## Latest implementation direction
 
 The user has asked this Codex task to own the complete implementation without waiting on teammates. Build in the ordered milestones in `docs/IMPLEMENTATION_PLAN.md`, committing each milestone. Use tokens for implementation and run focused tests at milestone boundaries, not after every edit. `CURRENT_STATUS.md` is the current implementation evidence; earlier planning-only statements above are historical.
+
+## Latest UI milestone
+
+The user authorized a full UI/UX redesign with parallel agents and image generation, and explicitly requested that the prior version be committed first. The clean, pushed checkpoint was `6ad2041`. All UI work is on `codex/raahi-experience`, keeping `codex/raahi-core` intact. The new design uses a native route-R logo, generated coastline artwork, ivory/teal palette, mobile recovery/itinerary switching and an accessible review sheet. Build and integrated browser checks passed; engine, server and persistence contracts were not changed. Read `CURRENT_STATUS.md` and `docs/DESIGN_SYSTEM.md` before continuing.

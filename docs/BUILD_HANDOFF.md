@@ -15,6 +15,10 @@ Read [the canonical roadmap](../HACKATHON_ROADMAP.md) first. This file retains t
 - This task owns integration per the latest user decision. Build in batches; test at milestone gates, not after each edit.
 - Published freeze: September 27, 2026, 11:00 AM IST. Use the actual remaining time; do not restart a 24-hour clock.
 
+## Latest UI integration
+
+The current experience is on `codex/raahi-experience`, stacked on the preserved core checkpoint `6ad2041`. The user requested UI/UX to be prioritized before the next deployment milestone. See `DESIGN_SYSTEM.md` for the logo/artwork, mobile behavior and design decisions. The engine/API contract is unchanged.
+
 ## Non-negotiable behavior
 
 1. Do not recommend a plan that violates a known hard constraint.
