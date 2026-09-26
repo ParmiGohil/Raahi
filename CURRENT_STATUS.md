@@ -9,9 +9,9 @@ Public repository: ParmiGohil/Raahi. Working branch: `codex/raahi-core`, based o
 ## Milestones
 
 - M0 complete: repository audit, architecture and ordered commit boundaries in `docs/IMPLEMENTATION_PLAN.md`.
-- M1 next: scaffold and deterministic recovery foundation.
+- M1 complete: TypeScript scaffold, GOI fixture, dependency impacts, independent validator, exact recovery ledgers, cash/protected-event controls and cancellation variants. Engine scenario suite: 7 passed.
 - M2 planned: stateful API and persistence.
 - M3 planned: interactive workspace and complete browser flow.
 - M4 planned: consolidated verification and release handoff.
 
-No application behavior is implemented yet. No application tests have been run. Testing will happen at meaningful milestone gates, as requested.
+Milestone checks run using Node 24: engine and repository suites, 10 tests passed; TypeScript check passed before UI integration. System Node 23 is outside Vitest 5 support, so use Node 24 (`.nvmrc`). Testing happens at milestone gates, as requested. The UI is being integrated; no browser verification yet.

@@ -23,3 +23,7 @@ test-results/
 exports/
 docs/session/
 /SESSION_MEMORY.json
+
+# Local demo state and compiler cache
+.raahi/
+*.tsbuildinfo
