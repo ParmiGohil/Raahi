@@ -52,3 +52,7 @@ Checks: 13 engine/repository/copilot/session tests passed; production build and 
 The user authorized publishing the completed prototype to `main`. Remote main was still at the original documentation checkpoint `dfe3065`; it had no new teammate commits to reconcile. Integrate the complete public implementation history by fast-forward, preserving all milestone commits and leaving the teammate's `parmi` branch untouched. No private planning history is included.
 
 `docs/LOCAL_SETUP.md` now contains fresh-clone and existing-clone commands, Node 24 setup, demo walkthrough, troubleshooting, branch collaboration and a Codex handoff prompt. Remaining delivery work: authenticate/configure/deploy to Vercel and verify the URL; build the PPT; rehearse and capture a backup demo; confirm submission requirements. No new feature work or regression rerun was needed for this documentation/integration milestone; the prior 13-test/build/browser evidence remains applicable.
+
+## PPT selection round
+
+Created a 10-slide pitch deck on `codex/raahi-pitch`, with an editable PowerPoint, PDF reading copy and presenter notes including judge Q&A in `docs/presentation/`. Narrative covers the disruption problem, complete recovery workspace, booking dependencies, exact fixture tradeoffs, hard budget/event constraints, simulated copilot, architecture and current scope. No new product capabilities or live integrations are claimed. Remaining: team rehearsal and any organizer-specific cover/template adjustments, Vercel sign-in/deployment, then backup demo recording.
