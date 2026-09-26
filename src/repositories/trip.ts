@@ -13,10 +13,14 @@ const processState = globalThis as typeof globalThis & {
   raahiQueue?: Promise<unknown>;
 };
 processState.raahiSecret ??= randomBytes(32).toString("hex");
+export function sessionSecret() {
+  const configured = process.env.RAAHI_SIGNING_SECRET;
+  if (process.env.VERCEL && (!configured || configured.length < 32))
+    throw new Error("RAAHI_SIGNING_SECRET must be configured for hosting");
+  return configured ?? processState.raahiSecret!;
+}
 function signature(body: string) {
-  return createHmac("sha256", processState.raahiSecret!)
-    .update(body)
-    .digest("hex");
+  return createHmac("sha256", sessionSecret()).update(body).digest("hex");
 }
 export function quoteFor(
   sessionId: string,
@@ -54,7 +58,7 @@ export class TripRepository {
     if (!/^[a-f0-9]{64}$/.test(id)) throw new Error("Invalid session");
     return path.join(this.directory, `${id}.json`);
   }
-  private async load(id: string): Promise<TripState> {
+  protected async load(id: string): Promise<TripState> {
     try {
       return JSON.parse(await readFile(this.file(id), "utf8")) as TripState;
     } catch (error) {
@@ -63,7 +67,7 @@ export class TripRepository {
       throw error;
     }
   }
-  private async save(id: string, state: TripState) {
+  protected async save(id: string, state: TripState) {
     await mkdir(this.directory, { recursive: true, mode: 0o700 });
     const destination = this.file(id),
       temporary = `${destination}.${randomBytes(6).toString("hex")}.tmp`;
@@ -114,7 +118,11 @@ export class TripRepository {
         throw new Conflict(
           "This recovery is already applied. Reset the demo to explore another scenario.",
         );
-      else if (command.action === "scenario") next.scenario = command.scenario;
+      else if (command.action === "copilot") {
+        next.scenario = command.scenario;
+        next.preferences = command.preferences;
+      } else if (command.action === "scenario")
+        next.scenario = command.scenario;
       else if (command.action === "preferences")
         next.preferences = command.preferences;
       else if (command.action === "apply") {

@@ -47,3 +47,11 @@ Preserved pre-redesign checkpoint: `6ad2041`. UI branch: `codex/raahi-experience
 The UI gate found and fixed hidden-pane skip navigation and confirmation scroll/focus. An early footer measurement was taken during its entry animation; the settled measurement and screenshot confirm visibility. Engine/API/repository files are unchanged, so the prior 10-test engine/repository evidence remains historical and those tests were not rerun for this presentation milestone.
 
 Local screenshots: `exports/design/`. Selected public preview images: `docs/previews/`. The destination is generated illustrative artwork, not a photo of a booked property.
+
+## Copilot milestone
+
+- 13 tests passed, including all prior engine/repository tests and new authored-request/hosted-cookie cases.
+- Production build/TypeScript passed after the final result-scroll refinement.
+- 390px browser: preview did not increment revision; explicit confirmation updated delay + protected concert + ₹2,500 budget; review/apply selected original-event plan at ₹2,300; no horizontal overflow.
+- Cookie payload authenticated/encrypted, bound to visitor ID; tampering, wrong visitor and expiry rejected; fresh repository instance restored the applied state within cookie size limit.
+- Vercel deployment not yet verified: CLI account sign-in pending. No claims of database-level concurrent writes in hosted cookie mode.

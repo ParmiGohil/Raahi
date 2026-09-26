@@ -1,0 +1,12 @@
+.git
+.raahi
+exports
+node_modules
+.next
+.env*
+docs
+SESSION_MEMORY.*
+HACKATHON_ROADMAP.md
+CURRENT_STATUS.md
+AGENTS.md
+tests

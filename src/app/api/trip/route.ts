@@ -9,6 +9,7 @@ import {
   InvalidPlan,
   quoteFor,
 } from "../../../repositories/trip";
+import { BrowserSessionRepository } from "../../../repositories/browser-session";
 import type { TripState } from "../../../domain/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,11 +21,25 @@ async function session() {
   jar.set("raahi-session", id, {
     httpOnly: true,
     sameSite: "strict",
-    secure: process.env.RAAHI_HTTPS === "true",
+    secure: !!process.env.VERCEL || process.env.RAAHI_HTTPS === "true",
     path: "/",
     maxAge: 86400 * 7,
   });
   return id;
+}
+async function storage() {
+  if (process.env.RAAHI_STORAGE !== "cookie" && !process.env.VERCEL)
+    return repository;
+  const jar = await cookies();
+  return new BrowserSessionRepository(jar.get("raahi-trip")?.value, (value) => {
+    jar.set("raahi-trip", value, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: !!process.env.VERCEL || process.env.RAAHI_HTTPS === "true",
+      path: "/",
+      maxAge: 86400 * 7,
+    });
+  });
 }
 function payload(id: string, state: TripState) {
   const { requests: _requests, ...publicState } = state;
@@ -32,6 +47,10 @@ function payload(id: string, state: TripState) {
     state: publicState,
     recovery: recover(state.scenario, state.preferences),
     quote: quoteFor(id, state.revision),
+    persistence:
+      process.env.RAAHI_STORAGE === "cookie" || process.env.VERCEL
+        ? "browser-session"
+        : "local-server",
   };
 }
 function json(data: unknown, status = 200) {
@@ -43,7 +62,7 @@ function json(data: unknown, status = 200) {
 export async function GET() {
   try {
     const id = await session();
-    return json(payload(id, await repository.read(id)));
+    return json(payload(id, await (await storage()).read(id)));
   } catch (error) {
     console.error("Trip read failed", error);
     return json({ error: "Could not load the demo. Please retry." }, 500);
@@ -76,7 +95,7 @@ export async function POST(request: NextRequest) {
     if (!command.success)
       return json({ error: "Invalid action, budget or revision." }, 400);
     const id = await session();
-    return json(payload(id, await repository.update(id, command.data)));
+    return json(payload(id, await (await storage()).update(id, command.data)));
   } catch (error) {
     if (error instanceof Conflict || error instanceof InvalidPlan)
       return json({ error: error.message }, 409);

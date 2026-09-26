@@ -36,3 +36,13 @@ Checks actually run: production build including TypeScript passed. Complete six-
 The original code remains available at `6ad2041`. Brand assets are committed separately from interaction/layout changes. See `docs/DESIGN_SYSTEM.md` for references, asset paths and the final generation prompt. Optional provider, deployment and submission work remains unchanged.
 
 UI follow-up: removed the visible artwork caption at the user's request and increased the compact destination banner to 140px on desktop / 144px on mobile. Production build passed; no engine tests rerun for this small presentation edit.
+
+## M6 — Simulated copilot and serverless preparation
+
+26 September 2026, ~20:50 IST. Branch `codex/raahi-copilot-deploy`, based on committed UI checkpoint `3ef49bc`.
+
+Implemented: prominently labeled simulated-AI copilot, three authored requests, cancellable timed workflow, actual engine-generated preview with cost/constraints, explicit preference confirmation, atomic scenario + preference command, protected-event/no-solution example, reduced-motion styles and mobile result scrolling. No real model calls, invented reasoning or provider execution.
+
+Hosting preparation: Vercel selects encrypted/authenticated HTTP-only cookie persistence automatically; local Node keeps its file repository. Stable deployment signing secret required. Cookies support reload/cold-start persistence and per-browser isolation, but are not a collaborative database and do not guarantee cross-instance concurrent transactions. See `docs/HOSTING.md`.
+
+Checks: 13 engine/repository/copilot/session tests passed; production build and TypeScript passed. Mobile integrated copilot flow verified read-only preview, atomic preferences, exact ₹2,300 recovery application and no horizontal overflow. Hosting account remains logged out: user sign-in requested. No public deployment URL yet. Next: complete Vercel authentication, configure deployment secret, publish and verify public URL; then prepare presentation/backup recording.
