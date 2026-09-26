@@ -1,22 +1,28 @@
 "use client";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
-  ArrowDown,
   ArrowRight,
+  ArrowUpRight,
   Check,
-  Compass,
+  ChevronDown,
+  Clock3,
   FlaskConical,
   GitBranch,
   History,
   MapPin,
+  Music2,
   Plane,
   RefreshCw,
+  Route,
   ShieldCheck,
   Sparkles,
   TriangleAlert,
+  Wallet,
 } from "lucide-react";
 import type { Plan, Recovery, Scenario, TripState } from "../domain/types";
 import { formatMoney } from "../engine/recover";
+import { Brand } from "./brand";
 import { Timeline } from "./timeline";
 import { PlanCard } from "./plan-card";
 import { Review } from "./review";
@@ -25,12 +31,34 @@ type ResponseData = {
   recovery: Recovery;
   quote: string;
 };
+const scenarios = [
+  {
+    id: "delay",
+    label: "Flight delayed 3 hours",
+    short: "Flight delay",
+    icon: Plane,
+  },
+  {
+    id: "activity-cancelled",
+    label: "Concert session cancelled",
+    short: "Concert cancelled",
+    icon: Music2,
+  },
+  {
+    id: "delay-later-cancelled",
+    label: "Delay + later session cancelled",
+    short: "Combined disruption",
+    icon: GitBranch,
+  },
+] as const;
 export default function Workspace() {
   const [data, setData] = useState<ResponseData | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [selected, setSelected] = useState<Plan | null>(null);
   const [budget, setBudget] = useState("3000");
+  const [view, setView] = useState<"recovery" | "journey">("recovery");
+  const [scenarioMenu, setScenarioMenu] = useState(false);
   const applyKey = useRef("");
   function receive(next: ResponseData) {
     setData(next);
@@ -70,6 +98,10 @@ export default function Workspace() {
       }
       receive(next);
       setSelected(null);
+      setScenarioMenu(false);
+      if (command.action === "scenario") setView("recovery");
+      if (command.action === "reset" || command.action === "apply")
+        navigate("recovery");
     } catch (e) {
       setError(
         e instanceof Error
@@ -80,115 +112,194 @@ export default function Workspace() {
       setBusy(false);
     }
   }
-  const state = data?.state;
-  const recovery = data?.recovery;
-  const applied = state?.applied;
+  function navigate(next: "recovery" | "journey") {
+    setView(next);
+    requestAnimationFrame(() => {
+      const target = document.getElementById(next);
+      target?.focus({ preventScroll: true });
+      target?.scrollIntoView({ block: "start" });
+    });
+  }
+  const state = data?.state,
+    recovery = data?.recovery,
+    applied = state?.applied;
   const isDisrupted = !!state && state.scenario !== "original";
   const blocked =
     recovery?.impacts.filter((i) => i.state === "blocked").length ?? 0;
   const timeline = applied?.segments ?? recovery?.timeline ?? [];
+  const budgetChanged =
+    !!state && Math.round(Number(budget) * 100) !== state.preferences.budget;
+  const activeScenario = scenarios.find((s) => s.id === state?.scenario);
+  const sharedLoss =
+    recovery?.plans.length &&
+    recovery.plans.every(
+      (p) => p.ledger.prepaidLoss === recovery.plans[0].ledger.prepaidLoss,
+    )
+      ? recovery.plans[0].ledger.prepaidLoss
+      : 0;
   return (
-    <div className="app-shell">
+    <div
+      className={`app-shell ${isDisrupted ? "has-disruption" : ""} ${applied ? "has-recovery" : ""}`}
+    >
+      <a
+        className="skip-link"
+        href="#recovery"
+        onClick={(event) => {
+          event.preventDefault();
+          navigate("recovery");
+        }}
+      >
+        Skip to recovery workspace
+      </a>
       <header className="topbar">
-        <a className="brand" href="/" aria-label="Raahi home">
-          <span className="brand-symbol">
-            <Compass size={24} />
-          </span>
-          raahi<span className="brand-dot">.</span>
+        <a href="/" aria-label="Raahi home">
+          <Brand />
         </a>
-        <nav>
-          <a href="#journey" className="active">
-            My journey
+        <nav aria-label="Main navigation">
+          <button
+            className={view === "recovery" ? "active" : ""}
+            onClick={() => navigate("recovery")}
+          >
+            Trip workspace
+          </button>
+          <button
+            className={view === "journey" ? "active" : ""}
+            onClick={() => navigate("journey")}
+          >
+            My itinerary
+          </button>
+          <a href="#about">
+            Behind the journey <ArrowUpRight size={13} />
           </a>
-          <a href="#recovery">Recovery workspace</a>
-          <a href="#about">How it works</a>
         </nav>
-        <span className="demo-badge">
-          <FlaskConical size={14} /> Demo workspace
-        </span>
+        <div className="header-right">
+          <span className="demo-badge">
+            <span /> Interactive demo
+          </span>
+          <span className="traveler-avatar" aria-label="Demo traveler">
+            R
+          </span>
+        </div>
       </header>
       <main>
-        <div className="breadcrumb">
-          Your travels <span>/</span> Mumbai to Goa <span>/</span> Trip
-          workspace
-        </div>
-        <section className="trip-header">
+        <div className="page-heading">
           <div>
-            <p className="eyebrow">
-              <span className="live-dot" /> A little less worry. A lot more
-              journey.
-            </p>
-            <h1>Goa, still on the cards.</h1>
-            <p className="trip-meta">
-              <MapPin size={15} /> Mumbai → Goa · GOI <span>•</span> 26–27 Sep
-              2026 <span>•</span> 1 traveler
-            </p>
+            <p className="eyebrow">THE JOURNEY IS STILL YOURS</p>
+            <h1>
+              Your Goa <em>getaway.</em>
+            </h1>
           </div>
           <button
             className="button reset"
             onClick={() => mutate({ action: "reset" })}
             disabled={!state || busy}
           >
-            <RefreshCw size={15} /> Reset demo
+            <RefreshCw size={15} />
+            <span>Reset demo</span>
           </button>
-        </section>
+        </div>
         <section
-          className={`journey-banner ${applied ? "recovered" : isDisrupted ? "disrupted" : ""}`}
+          className={`destination-hero ${isDisrupted ? "compact" : ""}`}
+          aria-label="Mumbai to Goa trip overview"
         >
-          <div className="banner-copy">
-            <span className="small-label">
-              {applied
-                ? "A WAY FORWARD, FOUND"
-                : isDisrupted
-                  ? "WHEN PLANS CHANGE"
-                  : "YOUR CONNECTED JOURNEY"}
-            </span>
+          <Image
+            src="/images/goa-coast.png"
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 760px) 100vw, 1400px"
+            className="destination-image"
+          />
+          <div className="destination-shade" />
+          <div className="destination-copy">
+            <div className="destination-label">
+              <MapPin size={13} /> GOA, INDIA <span>26—27 SEPTEMBER</span>
+            </div>
             <h2>
-              {applied
-                ? "Your recovery itinerary is ready."
-                : isDisrupted
-                  ? "One disruption. A whole trip to protect."
-                  : "A clear plan for every connection."}
+              {applied ? (
+                "Back to the good part."
+              ) : isDisrupted ? (
+                "A detour. Still your destination."
+              ) : (
+                <>
+                  Less worry.
+                  <br />
+                  <em>More wonder.</em>
+                </>
+              )}
             </h2>
             <p>
               {applied
-                ? "Saved to this demo session. Supplier actions are simulated and pending."
+                ? "Your new itinerary is saved. The next chapter is yours."
                 : isDisrupted
-                  ? "See what needs attention, explore the tradeoffs, and keep what matters."
-                  : "Your flight, transfers, stay and concert — connected in one place."}
+                  ? "Let’s protect the moments you came for."
+                  : "A seaside escape, a riverside concert, and a plan that moves with you."}
             </p>
-            <a
-              href={isDisrupted ? "#recovery" : "#journey"}
-              className="banner-link"
-            >
-              {isDisrupted
-                ? "Explore your way forward"
-                : "Explore your itinerary"}{" "}
-              <ArrowDown size={16} />
-            </a>
           </div>
-          <div
-            className="route-illustration"
-            aria-label="Route diagram from Mumbai to Goa, not a geographic map"
-          >
-            <div className="orbit orbit-one" />
-            <div className="orbit orbit-two" />
-            <div className="route-origin">
-              <span className="route-dot" />
-              <strong>BOM</strong>
-              <small>Mumbai</small>
+          <div className="trip-ticket">
+            <div className="ticket-route">
+              <div>
+                <strong>BOM</strong>
+                <span>Mumbai</span>
+              </div>
+              <span className="ticket-flight">
+                <span />
+                <Plane size={19} />
+                <span />
+              </span>
+              <div>
+                <strong>GOI</strong>
+                <span>Goa · Dabolim</span>
+              </div>
             </div>
-            <div className="flight-path">
-              <Plane size={27} />
+            <div className="ticket-footer">
+              <span>
+                <Clock3 size={12} /> 2 days
+              </span>
+              <span>1 traveler</span>
+              <span>IST</span>
             </div>
-            <div className="route-destination">
-              <MapPin size={28} />
-              <strong>GOI</strong>
-              <small>Goa</small>
-            </div>
-            <span className="route-caption">THE DESTINATION IS WORTH IT.</span>
           </div>
         </section>
+        <div className="workspace-toolbar">
+          <ol className="workflow-steps" aria-label="Recovery progress">
+            <li className="done">
+              <span>
+                <Check size={12} />
+              </span>
+              Connected trip
+            </li>
+            <li className={isDisrupted ? (applied ? "done" : "current") : ""}>
+              <span>{applied ? <Check size={12} /> : "2"}</span>Find a way
+            </li>
+            <li className={applied ? "current" : selected ? "current" : ""}>
+              <span>{applied ? <Check size={12} /> : "3"}</span>
+              {applied ? "Itinerary updated" : "Review & recover"}
+            </li>
+          </ol>
+          <span className="provenance">
+            <FlaskConical size={13} /> Fictional trip · No real bookings
+          </span>
+        </div>
+        <nav className="mobile-tabs" aria-label="Workspace sections">
+          <button
+            aria-pressed={view === "recovery"}
+            onClick={() => navigate("recovery")}
+          >
+            <Sparkles size={17} />
+            {applied ? "Recovery" : "Your options"}
+            {isDisrupted && !applied ? (
+              <span>{recovery?.plans.length ?? 0}</span>
+            ) : null}
+          </button>
+          <button
+            aria-pressed={view === "journey"}
+            onClick={() => navigate("journey")}
+          >
+            <Route size={17} />
+            Itinerary <span>{timeline.length}</span>
+          </button>
+        </nav>
         {error ? (
           <div className="notice error" role="alert">
             {error}
@@ -207,23 +318,41 @@ export default function Workspace() {
         ) : null}
         {!data ? (
           <div className="loading" role="status">
-            <Compass size={28} /> Connecting your journey…
+            <span className="loading-mark">
+              <Brand compact />
+            </span>
+            <h2>A little clarity is on its way.</h2>
+            <p>Connecting your journey…</p>
           </div>
         ) : (
           <>
-            <div className="workspace-grid">
-              <aside id="journey" className="journey-column">
+            <div className="workspace-grid" data-view={view}>
+              <aside
+                id="journey"
+                className="journey-column"
+                tabIndex={-1}
+                aria-label="Your itinerary"
+              >
                 <section className="panel itinerary">
                   <div className="section-heading">
                     <div>
-                      <p className="eyebrow">The full picture</p>
+                      <p className="eyebrow">EVERY CONNECTION COUNTS</p>
                       <h2>Your itinerary</h2>
                     </div>
-                    <span className="revision">v{state!.revision}</span>
+                    <span className="revision" title="Saved itinerary revision">
+                      v{state!.revision}
+                    </span>
                   </div>
+                  <p className="itinerary-context">
+                    {applied
+                      ? "Your revised route · supplier actions pending"
+                      : isDisrupted
+                        ? "Original bookings, with the disruption shown"
+                        : "One connected journey, from takeoff to tomorrow."}
+                  </p>
                   <div className="date-strip">
-                    <span>Saturday, 26 September</span>
-                    <span>IST</span>
+                    <span>Sat, 26 Sep</span>
+                    <span>All times in IST</span>
                   </div>
                   <Timeline
                     segments={timeline}
@@ -231,60 +360,90 @@ export default function Workspace() {
                     applied={!!applied}
                   />
                   <p className="timeline-footnote">
-                    Select an item to inspect its connection and evidence.
+                    Open any stop to see timing and connection details.
                   </p>
                 </section>
                 <section className="proactive">
-                  <span className="proactive-icon">
-                    <ShieldCheck size={21} />
-                  </span>
+                  <ShieldCheck size={22} />
                   <div>
-                    <h3>A heads-up before takeoff</h3>
+                    <p className="eyebrow">
+                      {isDisrupted
+                        ? "ORIGINAL CONNECTION RISK"
+                        : "A HEADS-UP, NOT A HICCUP"}
+                    </p>
+                    <h3>That shuttle connection is tight.</h3>
                     <p>{recovery!.warning}</p>
-                    <small>
-                      Authored advisory · not a probability forecast
-                    </small>
+                    <span>Scenario advisory · not a live forecast</span>
                   </div>
                 </section>
               </aside>
-              <div id="recovery" className="recovery-column">
-                <section className="panel simulator">
-                  <div className="section-heading">
-                    <div className="heading-with-icon">
-                      <FlaskConical size={18} />
-                      <h2>Explore a disruption</h2>
+              <div
+                id="recovery"
+                className="recovery-column"
+                tabIndex={-1}
+                role="region"
+                aria-label="Recovery workspace"
+              >
+                <section
+                  className={`simulator ${isDisrupted ? "condensed" : ""}`}
+                >
+                  <div className="simulator-heading">
+                    <div>
+                      <span className="scenario-icon">
+                        <FlaskConical size={18} />
+                      </span>
+                      <div>
+                        <h2>
+                          {isDisrupted
+                            ? activeScenario?.label
+                            : "Put your plans to the test"}
+                        </h2>
+                        <p>Choose a disruption. See the whole trip respond.</p>
+                      </div>
                     </div>
-                    <span className="fixture-label">Fictional scenario</span>
+                    {isDisrupted && !applied ? (
+                      <button
+                        className="text-button"
+                        aria-expanded={scenarioMenu}
+                        aria-controls="scenario-controls"
+                        onClick={() => setScenarioMenu(!scenarioMenu)}
+                      >
+                        Change scenario <ChevronDown size={14} />
+                      </button>
+                    ) : (
+                      <span className="fixture-label">
+                        09:00 IST · fixed clock
+                      </span>
+                    )}
                   </div>
-                  <p className="muted">
-                    A fixed 09:00 IST scenario clock. No real bookings are
-                    affected.
-                  </p>
+                  {isDisrupted ? (
+                    <div className="scenario-summary">
+                      <span className="scenario-current">
+                        <Plane size={14} />
+                        {activeScenario?.label}
+                      </span>
+                      {!applied ? (
+                        <span className="scenario-clock">
+                          Fictional scenario
+                        </span>
+                      ) : (
+                        <span className="status-saved">
+                          <Check size={13} /> Explored
+                        </span>
+                      )}
+                    </div>
+                  ) : null}
                   <fieldset
+                    id="scenario-controls"
                     disabled={busy || !!applied}
-                    className="scenario-buttons"
+                    className={`scenario-buttons ${isDisrupted && !scenarioMenu ? "collapsed" : ""}`}
                   >
-                    {(
-                      [
-                        {
-                          id: "delay",
-                          label: "Flight delayed 3 hours",
-                          icon: Plane,
-                        },
-                        {
-                          id: "activity-cancelled",
-                          label: "Concert session cancelled",
-                          icon: TriangleAlert,
-                        },
-                        {
-                          id: "delay-later-cancelled",
-                          label: "Delay + later session cancelled",
-                          icon: GitBranch,
-                        },
-                      ] as const
-                    ).map(({ id, label, icon: Icon }) => (
+                    {scenarios.map(({ id, label, short, icon: Icon }) => (
                       <button
                         key={id}
+                        aria-label={label}
+                        title={label}
+                        aria-pressed={state!.scenario === id}
                         className={`scenario-button ${state!.scenario === id ? "selected" : ""}`}
                         onClick={() =>
                           mutate({
@@ -293,43 +452,61 @@ export default function Workspace() {
                           })
                         }
                       >
-                        <Icon size={16} />
-                        {label}
-                        {state!.scenario === id ? <Check size={15} /> : null}
+                        <Icon size={18} />
+                        <span>{short}</span>
+                        <ArrowUpRight size={14} />
                       </button>
                     ))}
                   </fieldset>
                 </section>
                 {applied ? (
                   <section className="panel success-panel" aria-live="polite">
-                    <div className="success-icon">
-                      <Check size={28} />
+                    <div className="success-top">
+                      <div className="success-icon">
+                        <Check size={28} />
+                      </div>
+                      <span className="confirmation-badge">
+                        ITINERARY SAVED
+                      </span>
                     </div>
-                    <p className="eyebrow">Recovery itinerary updated</p>
-                    <h2>More journey. Less juggling.</h2>
+                    <p className="eyebrow">YOUR WAY FORWARD</p>
+                    <h2>
+                      Go make that <em>memory.</em>
+                    </h2>
                     <p>
-                      You chose <strong>{applied.title}</strong>. Your revised
-                      route is saved and will remain here when you refresh.
+                      You chose <strong>{applied.title}</strong>. Your new route
+                      is saved, including the moments you wanted to keep.
                     </p>
                     <div className="success-metrics">
                       <div>
+                        <Wallet size={18} />
                         <strong>{formatMoney(applied.ledger.cashNow)}</strong>
                         <span>Planned cash needed</span>
                       </div>
                       <div>
+                        <Music2 size={18} />
                         <strong>
                           {applied.originalEvent ? "16:00" : "18:00"}
                         </strong>
-                        <span>Concert session</span>
+                        <span>Your concert session</span>
                       </div>
                     </div>
-                    <p className="notice amber">
-                      Provider actions pending. No ticket, taxi, room or refund
-                      has been purchased or confirmed.
+                    <button
+                      className="button primary"
+                      onClick={() => navigate("journey")}
+                    >
+                      See your updated itinerary <ArrowRight size={17} />
+                    </button>
+                    <p className="execution-note">
+                      <FlaskConical size={16} />
+                      This updates your demo itinerary. Supplier actions are
+                      simulated and pending; nothing has been booked or
+                      purchased.
                     </p>
                     <details className="validation">
                       <summary>
-                        <History size={16} /> View recovery record
+                        <History size={16} /> View recovery record{" "}
+                        <ChevronDown size={15} />
                       </summary>
                       {state!.history.map((entry) => (
                         <div key={entry.revision}>
@@ -345,73 +522,119 @@ export default function Workspace() {
                       ))}
                     </details>
                     <button
-                      className="button outline"
+                      className="text-button"
                       onClick={() => mutate({ action: "reset" })}
                       disabled={busy}
                     >
-                      Try another scenario <RefreshCw size={15} />
+                      <RefreshCw size={14} />
+                      Try another scenario
                     </button>
                   </section>
                 ) : (
                   <>
                     {!isDisrupted ? (
                       <section className="panel ready-panel">
-                        <div className="ready-icon">
-                          <Sparkles size={27} />
+                        <div className="ready-copy">
+                          <span className="feature-kicker">
+                            <Sparkles size={15} /> TRAVEL WITH A WAY FORWARD
+                          </span>
+                          <h2>
+                            Plans change.
+                            <br />
+                            <em>The good part doesn’t have to.</em>
+                          </h2>
+                          <p>
+                            A delayed flight shouldn’t unravel your whole day.
+                            We connect the dots, find the alternatives, and keep
+                            your priorities in the picture.
+                          </p>
+                          <button
+                            className="button primary"
+                            disabled={busy}
+                            onClick={() =>
+                              mutate({ action: "scenario", scenario: "delay" })
+                            }
+                          >
+                            Simulate flight delay <ArrowRight size={17} />
+                          </button>
+                          <span className="ready-footnote">
+                            Try the 3-hour delay · no real bookings affected
+                          </span>
                         </div>
-                        <p className="eyebrow">Ready when plans aren’t</p>
-                        <h2>Find your way forward.</h2>
-                        <p>
-                          Simulate a disruption above. Raahi traces its impact
-                          across the trip and compares repairs around your time,
-                          budget and priorities.
-                        </p>
-                        <div className="flow-steps">
-                          <span>
-                            01 <strong>Understand</strong>
-                          </span>
-                          <ArrowRight size={16} />
-                          <span>
-                            02 <strong>Compare</strong>
-                          </span>
-                          <ArrowRight size={16} />
-                          <span>
-                            03 <strong>Recover</strong>
-                          </span>
-                        </div>
-                        <button
-                          className="button primary"
-                          disabled={busy}
-                          onClick={() =>
-                            mutate({ action: "scenario", scenario: "delay" })
-                          }
+                        <div
+                          className="connection-story"
+                          aria-label="Raahi connects your flight, hotel and concert"
                         >
-                          Simulate flight delay <ArrowRight size={16} />
-                        </button>
+                          <div className="story-flight">
+                            <span className="story-icon">
+                              <Plane size={22} />
+                            </span>
+                            <div>
+                              <small>YOUR FLIGHT</small>
+                              <strong>Mumbai → Goa</strong>
+                              <span className="story-chip">One change…</span>
+                            </div>
+                          </div>
+                          <div className="story-connector">
+                            <span />
+                            <GitBranch size={21} />
+                            <span />
+                          </div>
+                          <div className="story-destinations">
+                            <div>
+                              <HotelGlyph />
+                              <strong>A softer landing</strong>
+                              <span>Your hotel</span>
+                            </div>
+                            <div>
+                              <Music2 size={22} />
+                              <strong>The moment that matters</strong>
+                              <span>Your concert</span>
+                            </div>
+                          </div>
+                          <p>
+                            <ShieldCheck size={14} /> The whole trip, considered
+                            together.
+                          </p>
+                        </div>
                       </section>
                     ) : (
                       <>
                         <section className="impact-banner">
-                          <TriangleAlert size={22} />
+                          <span className="impact-symbol">
+                            <TriangleAlert size={21} />
+                          </span>
                           <div>
-                            <h3>
-                              {state!.scenario === "activity-cancelled"
-                                ? "Your original concert session is unavailable."
-                                : "Arrival moved to 14:00. Your shuttle won’t wait."}
-                            </h3>
+                            <div className="impact-title">
+                              <h3>
+                                {state!.scenario === "activity-cancelled"
+                                  ? "The 16:00 concert is cancelled."
+                                  : "Landing later. Let’s reconnect the day."}
+                              </h3>
+                              <span className="impact-count">
+                                {blocked} dependent{" "}
+                                {blocked === 1 ? "item" : "items"}
+                              </span>
+                            </div>
                             <p>
-                              {state!.scenario === "activity-cancelled"
-                                ? "The 18:00 session is available in the fixture catalog. Protecting 16:00 will leave no feasible repair."
-                                : `${blocked} connected itinerary items need repair. Airport-ready at 14:30 is after the shuttle’s 11:50 cutoff.`}
+                              {state!.scenario === "activity-cancelled" ? (
+                                "The 18:00 session is available in our demo catalog. Your other plans can stay in place."
+                              ) : (
+                                <>
+                                  Ready at <strong>14:30</strong>. Shuttle
+                                  boarding closes at <strong>11:50</strong>.
+                                  Your onward plans need a new connection.
+                                </>
+                              )}
+                              {state!.scenario === "delay-later-cancelled"
+                                ? " The later concert session is also unavailable."
+                                : ""}
                             </p>
-                            {state!.scenario === "delay-later-cancelled" ? (
-                              <p>
-                                The later concert is also cancelled; only the
-                                original-session route can work.
-                              </p>
-                            ) : null}
                             <details>
-                              <summary>See how the impact travels</summary>
+                              <summary>
+                                Follow the ripple effect{" "}
+                                <ChevronDown size={14} />
+                              </summary>
                               <ol>
                                 {recovery!.impacts
                                   .filter(
@@ -421,13 +644,16 @@ export default function Workspace() {
                                   )
                                   .map((i) => (
                                     <li key={i.id}>
-                                      <strong>
-                                        {
-                                          timeline.find((s) => s.id === i.id)
-                                            ?.title
-                                        }
-                                      </strong>
-                                      <span>{i.reason}</span>
+                                      <span className="impact-node" />
+                                      <div>
+                                        <strong>
+                                          {
+                                            timeline.find((s) => s.id === i.id)
+                                              ?.title
+                                          }
+                                        </strong>
+                                        <p>{i.reason}</p>
+                                      </div>
                                     </li>
                                   ))}
                               </ol>
@@ -435,27 +661,21 @@ export default function Workspace() {
                           </div>
                         </section>
                         <section className="panel preferences">
-                          <div className="section-heading">
-                            <div>
-                              <p className="eyebrow">
-                                Your priorities lead the way
-                              </p>
-                              <h2>What matters most?</h2>
-                            </div>
-                            <ShieldCheck size={21} />
+                          <div className="preferences-title">
+                            <ShieldCheck size={16} />
+                            <h2>Make it your kind of recovery.</h2>
+                            <span>YOUR PRIORITIES</span>
                           </div>
                           <fieldset disabled={busy}>
                             <label className="protect-control">
                               <span>
-                                <strong>
-                                  Protect the original 16:00 concert
-                                </strong>
-                                <small>
-                                  Keep this session as a hard requirement.
-                                </small>
+                                <strong>Keep my 16:00 concert</strong>
+                                <small>Protect the original session</small>
                               </span>
                               <input
                                 type="checkbox"
+                                role="switch"
+                                aria-label="Protect the original 16:00 concert"
                                 checked={state!.preferences.protectOriginal}
                                 onChange={(e) =>
                                   mutate({
@@ -466,6 +686,10 @@ export default function Workspace() {
                                     },
                                   })
                                 }
+                              />
+                              <span
+                                className="switch-track"
+                                aria-hidden="true"
                               />
                             </label>
                             <form
@@ -483,12 +707,14 @@ export default function Workspace() {
                               }}
                             >
                               <label htmlFor="budget">
-                                Cash available now{" "}
-                                <span>
-                                  Refunds later don’t increase this limit.
-                                </span>
+                                Cash available now
+                                <small>
+                                  {budgetChanged
+                                    ? "Unsaved change · select Update"
+                                    : "Refunds later don’t add to this limit"}
+                                </small>
                               </label>
-                              <div>
+                              <div className={budgetChanged ? "dirty" : ""}>
                                 <span>₹</span>
                                 <input
                                   id="budget"
@@ -502,8 +728,9 @@ export default function Workspace() {
                                   onChange={(e) => setBudget(e.target.value)}
                                 />
                                 <button
-                                  className="button outline"
+                                  className="budget-update"
                                   type="submit"
+                                  aria-label="Update cash budget"
                                 >
                                   Update
                                 </button>
@@ -514,13 +741,19 @@ export default function Workspace() {
                         <section className="options" aria-busy={busy}>
                           <div className="section-heading">
                             <div>
-                              <p className="eyebrow">
-                                Different routes. Clear tradeoffs.
-                              </p>
+                              <p className="eyebrow">A FEW GOOD WAYS FORWARD</p>
                               <h2>Your recovery options</h2>
                             </div>
-                            <span className="count-badge" aria-live="polite">
-                              {recovery!.plans.length} feasible
+                            <span
+                              className="count-badge"
+                              role="status"
+                              aria-live="polite"
+                            >
+                              <span />
+                              {recovery!.plans.length}{" "}
+                              {recovery!.plans.length === 1
+                                ? "option fits"
+                                : "options fit"}
                             </span>
                           </div>
                           {recovery!.plans.length ? (
@@ -530,40 +763,81 @@ export default function Workspace() {
                                   <PlanCard
                                     key={plan.id}
                                     plan={plan}
-                                    disabled={busy}
+                                    disabled={busy || budgetChanged}
                                     onReview={(p) => {
                                       applyKey.current = crypto.randomUUID();
+                                      setError("");
                                       setSelected(p);
                                     }}
                                   />
                                 ))}
                               </div>
-                              <p className="comparison-footnote">
-                                *Changed items include added, removed and
-                                modified services versus the original itinerary.
-                                Cash excludes already-paid losses. All inventory
-                                and policies are fixtures.
-                              </p>
+                              <div className="comparison-footnote">
+                                <FlaskConical size={14} />
+                                <p>
+                                  {sharedLoss ? (
+                                    <>
+                                      Each plan carries the same{" "}
+                                      <strong>
+                                        {formatMoney(sharedLoss)} already-paid
+                                        shuttle loss
+                                      </strong>
+                                      , excluded from cash above.{" "}
+                                    </>
+                                  ) : null}
+                                  All availability, fares and policies are
+                                  authored demo data.
+                                </p>
+                              </div>
                             </>
                           ) : (
                             <div className="panel no-solution">
-                              <ShieldCheck size={28} />
-                              <h3>No plan meets all your requirements.</h3>
+                              <span className="no-solution-icon">
+                                <ShieldCheck size={26} />
+                              </span>
+                              <h3>Your priorities deserve an honest answer.</h3>
                               <p>
-                                We kept your hard constraints. Increase the cash
-                                limit, unprotect the original session, or reset
-                                to explore another disruption.
+                                No plan meets all your requirements. We won’t
+                                quietly change what matters to you.
                               </p>
+                              <div className="no-solution-actions">
+                                <button
+                                  className="button outline"
+                                  onClick={() =>
+                                    document.getElementById("budget")?.focus()
+                                  }
+                                >
+                                  Adjust cash limit <ArrowRight size={15} />
+                                </button>
+                                {state!.preferences.protectOriginal ? (
+                                  <button
+                                    className="text-button"
+                                    disabled={busy}
+                                    onClick={() =>
+                                      mutate({
+                                        action: "preferences",
+                                        preferences: {
+                                          ...state!.preferences,
+                                          protectOriginal: false,
+                                        },
+                                      })
+                                    }
+                                  >
+                                    Allow a later concert
+                                  </button>
+                                ) : null}
+                              </div>
                             </div>
                           )}
                           {recovery!.rejections.length ? (
                             <details className="rejections">
                               <summary>
-                                Why {recovery!.rejections.length}{" "}
+                                <ShieldCheck size={15} /> Why{" "}
+                                {recovery!.rejections.length}{" "}
                                 {recovery!.rejections.length === 1
                                   ? "option was"
                                   : "options were"}{" "}
-                                ruled out
+                                ruled out <ChevronDown size={14} />
                               </summary>
                               {recovery!.rejections.map((rejection) => (
                                 <div key={rejection.title}>
@@ -586,30 +860,48 @@ export default function Workspace() {
             </div>
             <section id="about" className="about-strip">
               <div>
-                <Compass size={21} />
-                <strong>Built around the whole trip.</strong>
+                <Brand compact />
+                <div>
+                  <h2>
+                    A little intelligence.
+                    <br />
+                    <em>A lot of peace of mind.</em>
+                  </h2>
+                </div>
               </div>
-              <p>
-                Connected dependencies → timing & policy checks → feasible
-                alternatives → a revised itinerary. Deterministic decisions,
-                with evidence you can inspect.
-              </p>
-              <span>
-                Fixture data · Local demo persistence · Simulated actions
-              </span>
+              <div className="about-principles">
+                <div>
+                  <Route size={19} />
+                  <strong>The whole trip</strong>
+                  <p>Every stop and the connections between them.</p>
+                </div>
+                <div>
+                  <ShieldCheck size={19} />
+                  <strong>Your priorities</strong>
+                  <p>Hard constraints stay hard. No hidden compromises.</p>
+                </div>
+                <div>
+                  <Wallet size={19} />
+                  <strong>Clear tradeoffs</strong>
+                  <p>Know what changes and what you’ll need to pay.</p>
+                </div>
+              </div>
             </section>
           </>
         )}
       </main>
       <footer>
-        <span className="brand footer-brand">raahi.</span>
-        <p>A way forward, wherever you’re headed.</p>
-        <span>Travel resilience · PS ID 2</span>
+        <Brand compact />
+        <p>For wherever the journey takes you.</p>
+        <span>
+          Made for travel resilience <span>✳</span> PS ID 2
+        </span>
       </footer>
       <Review
         plan={selected}
         before={recovery?.timeline ?? []}
         busy={busy}
+        error={error}
         onClose={() => setSelected(null)}
         onApply={() => {
           if (selected && data)
@@ -623,9 +915,24 @@ export default function Workspace() {
       />
       {busy ? (
         <div className="saving" role="status">
-          <RefreshCw size={14} /> Updating your journey…
+          <RefreshCw size={15} /> Finding your way forward…
         </div>
       ) : null}
     </div>
+  );
+}
+function HotelGlyph() {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      aria-hidden="true"
+    >
+      <path d="M5 21V3h14v18M2 21h20M9 21v-5h6v5M8 7h2m4 0h2M8 11h2m4 0h2" />
+    </svg>
   );
 }

@@ -1,4 +1,12 @@
-import { ArrowRight, Check, Clock3, ShieldCheck, Wallet } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  ChevronDown,
+  Clock3,
+  Music2,
+  ShieldCheck,
+  Wallet,
+} from "lucide-react";
 import type { Plan } from "../domain/types";
 import { formatMoney, time } from "../engine/recover";
 export function PlanCard({
@@ -33,28 +41,43 @@ export function PlanCard({
         {formatMoney(plan.ledger.cashNow)}
         <span>cash needed now</span>
       </div>
-      <dl className="comparison">
+      <dl className="plan-key-metrics">
         <div>
-          <dt>Concert session</dt>
+          <dt>
+            <Music2 size={14} aria-hidden="true" /> Concert session
+          </dt>
           <dd>{time(event.start)}</dd>
         </div>
         <div>
-          <dt>Rest at hotel</dt>
+          <dt>
+            <Clock3 size={14} aria-hidden="true" /> Rest at hotel
+          </dt>
           <dd>{plan.restMinutes} min</dd>
         </div>
-        <div>
-          <dt>Itinerary items changed*</dt>
-          <dd>{plan.changedIds.length}</dd>
-        </div>
-        <div>
-          <dt>Later refund</dt>
-          <dd>{formatMoney(plan.ledger.futureRefund)}</dd>
-        </div>
-        <div>
-          <dt>Prepaid loss</dt>
-          <dd>{formatMoney(plan.ledger.prepaidLoss)}</dd>
-        </div>
       </dl>
+      <details className="plan-details">
+        <summary>
+          Changes & finances <ChevronDown size={14} aria-hidden="true" />
+        </summary>
+        <dl className="comparison">
+          <div>
+            <dt>Itinerary items changed*</dt>
+            <dd>{plan.changedIds.length}</dd>
+          </div>
+          <div>
+            <dt>Later refund</dt>
+            <dd>{formatMoney(plan.ledger.futureRefund)}</dd>
+          </div>
+          <div>
+            <dt>Prepaid loss</dt>
+            <dd>{formatMoney(plan.ledger.prepaidLoss)}</dd>
+          </div>
+        </dl>
+        <p className="plan-details-note">
+          *Counts added, removed and modified services versus the original trip.
+          Already-paid losses are separate from cash needed now.
+        </p>
+      </details>
       <p className={plan.warnings.length ? "plan-warning" : "plan-valid"}>
         {plan.warnings.length ? (
           plan.warnings[0]

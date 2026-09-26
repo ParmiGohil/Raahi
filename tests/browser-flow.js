@@ -15,7 +15,9 @@
   };
   const button = (text) =>
     [...document.querySelectorAll("button")].find(
-      (el) => el.textContent.trim() === text,
+      (el) =>
+        el.getAttribute("aria-label") === text ||
+        el.textContent.trim() === text,
     );
   const click = (text) => {
     const el = button(text);

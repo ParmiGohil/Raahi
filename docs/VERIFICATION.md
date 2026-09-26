@@ -30,3 +30,20 @@ Screenshots are local under ignored `exports/verification/`: baseline, desktop o
 ## Limits — do not pitch these as completed
 
 No public deployment, live inventory, real booking/refund execution, LLM interpretation, forecast integration, production accounts, hotel-cancellation recovery, global routing, presentation deck or demo recording. This is a bounded catalog with authored schedules, fares and policies, not a globally optimal planner. The JSON store is for one local Node process with persistent disk. Broader ongoing-trip behavior is guarded by the validator but has no interactive demo control. Unknown essential inventory rejects an option; there is no separate conditional-plan experience yet.
+
+## UI/UX milestone — 26 September, 20:14 IST
+
+Preserved pre-redesign checkpoint: `6ad2041`. UI branch: `codex/raahi-experience`.
+
+- Production build and TypeScript passed after integration and navigation corrections.
+- The existing six-assertion browser journey passed against the redesigned production UI: delay, three alternatives, protected event, no solution, financial review and persisted application.
+- Desktop overview and recovery inspected at 1440×1000; laptop at 1280×800; mobile at 390×844. No measured horizontal overflow; additional 320px and 768px width checks also passed.
+- Mobile itinerary/recovery switch works. Skip link reveals a previously hidden recovery pane and focuses it.
+- Review has an accessible name, scrollable body and independently visible footer; after the entry animation its bottom is exactly 844px in an 844px viewport. Escape dismisses the dialog.
+- Apply focuses recovery and places the confirmation in view (observed confirmation top ~208px); refresh retained applied revision 10.
+- Final desktop recovery heading begins ~600px down the document at 1440px width, versus the prior visual audit's approximately 1,180px. This is a layout measurement, not a user-study result.
+- No browser runtime errors reported by the browser tool. No claim of a complete WCAG audit.
+
+The UI gate found and fixed hidden-pane skip navigation and confirmation scroll/focus. An early footer measurement was taken during its entry animation; the settled measurement and screenshot confirm visibility. Engine/API/repository files are unchanged, so the prior 10-test engine/repository evidence remains historical and those tests were not rerun for this presentation milestone.
+
+Local screenshots: `exports/design/`. Selected public preview images: `docs/previews/`. The destination is generated illustrative artwork, not a photo of a booked property.
