@@ -2,6 +2,8 @@
 
 A working travel disruption recovery prototype for HackCelestial PS ID 2. Explore a fictional Mumbai–Goa itinerary, see connection failures, compare constrained recovery plans, review costs and update the itinerary.
 
+For clone/pull commands, troubleshooting and a ready-to-paste Codex handoff, see [the teammate setup guide](docs/LOCAL_SETUP.md).
+
 ## Run locally
 
 Use Node **24** (`nvm install && nvm use` if nvm is installed).

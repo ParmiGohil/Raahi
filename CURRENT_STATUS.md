@@ -46,3 +46,9 @@ Implemented: prominently labeled simulated-AI copilot, three authored requests, 
 Hosting preparation: Vercel selects encrypted/authenticated HTTP-only cookie persistence automatically; local Node keeps its file repository. Stable deployment signing secret required. Cookies support reload/cold-start persistence and per-browser isolation, but are not a collaborative database and do not guarantee cross-instance concurrent transactions. See `docs/HOSTING.md`.
 
 Checks: 13 engine/repository/copilot/session tests passed; production build and TypeScript passed. Mobile integrated copilot flow verified read-only preview, atomic preferences, exact ₹2,300 recovery application and no horizontal overflow. Hosting account remains logged out: user sign-in requested. No public deployment URL yet. Next: complete Vercel authentication, configure deployment secret, publish and verify public URL; then prepare presentation/backup recording.
+
+## Main integration and teammate handoff
+
+The user authorized publishing the completed prototype to `main`. Remote main was still at the original documentation checkpoint `dfe3065`; it had no new teammate commits to reconcile. Integrate the complete public implementation history by fast-forward, preserving all milestone commits and leaving the teammate's `parmi` branch untouched. No private planning history is included.
+
+`docs/LOCAL_SETUP.md` now contains fresh-clone and existing-clone commands, Node 24 setup, demo walkthrough, troubleshooting, branch collaboration and a Codex handoff prompt. Remaining delivery work: authenticate/configure/deploy to Vercel and verify the URL; build the PPT; rehearse and capture a backup demo; confirm submission requirements. No new feature work or regression rerun was needed for this documentation/integration milestone; the prior 13-test/build/browser evidence remains applicable.
