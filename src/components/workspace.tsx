@@ -260,7 +260,6 @@ export default function Workspace() {
               <span>IST</span>
             </div>
           </div>
-          <span className="image-credit">AI-created destination artwork</span>
         </section>
         <div className="workspace-toolbar">
           <ol className="workflow-steps" aria-label="Recovery progress">

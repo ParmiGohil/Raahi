@@ -34,3 +34,5 @@ Completed: custom route-inspired vector identity, original Goa-inspired generate
 Checks actually run: production build including TypeScript passed. Complete six-assertion browser flow passed. Mobile section switching, skip-link focus, independently scrolling review body, visible apply footer, Escape dismissal, confirmation navigation and refresh persistence passed. Layouts inspected at 1440×1000, 1280×800 and 390×844; width checks passed at 320 and 768px too. Engine unit tests were not rerun for this UI-only milestone.
 
 The original code remains available at `6ad2041`. Brand assets are committed separately from interaction/layout changes. See `docs/DESIGN_SYSTEM.md` for references, asset paths and the final generation prompt. Optional provider, deployment and submission work remains unchanged.
+
+UI follow-up: removed the visible artwork caption at the user's request and increased the compact destination banner to 140px on desktop / 144px on mobile. Production build passed; no engine tests rerun for this small presentation edit.

@@ -447,14 +447,7 @@ main {
   align-items: center;
   gap: 4px;
 }
-.image-credit {
-  font-size: 8px;
-  position: absolute;
-  bottom: 10px;
-  right: 16px;
-  letter-spacing: 0.3px;
-  color: #ffffffc9;
-}
+
 .destination-hero.compact {
   height: 130px;
   padding: 21px 30px;
@@ -2467,12 +2460,7 @@ footer > span:last-child > span {
   .compact .destination-label > span {
     font-size: 7px;
   }
-  .image-credit {
-    font-size: 7px;
-    right: 11px;
-    bottom: 6px;
-    color: #ffffffb8;
-  }
+
   .workspace-toolbar {
     padding: 17px 0;
   }
@@ -3393,7 +3381,7 @@ footer > span:last-child > span {
 }
 @media (max-width: 760px) {
   .has-disruption .destination-hero.compact {
-    height: 114px;
+    height: 144px;
   }
   .condensed .simulator-heading h2 {
     font-size: 11px;
@@ -3421,19 +3409,13 @@ footer > span:last-child > span {
   padding-bottom: 16px;
 }
 .has-disruption .destination-hero.compact {
-  height: 102px;
+  height: 140px;
 }
 .has-disruption .workspace-toolbar {
   padding-top: 12px;
   padding-bottom: 12px;
 }
-.compact .image-credit {
-  padding: 1px 5px;
-  background: #18493d85;
-  border-radius: 3px;
-  right: 10px;
-  bottom: 4px;
-}
+
 .plan-key-metrics dt {
   font-size: 12px;
 }
@@ -3467,7 +3449,7 @@ footer > span:last-child > span {
     display: block;
   }
   .has-disruption .destination-hero.compact {
-    height: 114px;
+    height: 144px;
   }
   .journey-column,
   .recovery-column {
@@ -3492,8 +3474,5 @@ footer > span:last-child > span {
   .impact-banner details {
     clear: both;
   }
-  .compact .image-credit {
-    font-size: 6px;
-    right: 7px;
-  }
+
 }
