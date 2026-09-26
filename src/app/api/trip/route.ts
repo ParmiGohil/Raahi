@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
     return json({ error: "JSON required." }, 415);
   try {
     const raw = await request.text();
-    if (raw.length > 50000)
+    if (raw.length > 200000)
       return json({ error: "Request is too large." }, 413);
     let parsed: unknown;
     try {

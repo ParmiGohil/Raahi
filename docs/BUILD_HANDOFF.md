@@ -4,6 +4,9 @@ Read [the canonical roadmap](../HACKATHON_ROADMAP.md) first. This file retains t
 
 ## Current state
 
+Latest follow-up: see the top CURRENT_STATUS entry. `pdf-booking.ts` maps actual document text conservatively; `pdf-reader.ts` extracts via PDF.js locally; `PdfPreview` renders original pages. `prebuild`/`predev` copy the package-matched worker into ignored public output. `organize.ts` orders and reconnects automatic bookings before repository validation. `profile` is a revisioned command. Unknown-duration/place markers prevent fictitious feasibility or health scores. Copilot code remains unchanged. Personal transfer alternatives are expressly fictional assumptions, not live inventory.
+
+
 ### Connected experience extension (27 September 2026)
 
 Local branch `codex/raahi-connected-experience` extends main `0475d7c`. Routes: `/`, `/itinerary`, `/add-itinerary`, `/dependencies`, `/what-if`, `/recovery`. `TripProvider` shares revisioned server state; `journey.ts` supplies generic timing analysis, flexible rescheduling and health. Existing demo engine and copilot remain the source of Goa recovery offers. New API commands: `itinerary` and `disruption`; server validation rejects duplicate IDs, dangling/cyclic dependencies and stale revisions.

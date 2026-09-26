@@ -20,7 +20,8 @@ export const formatMoney = (minor: number) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
   }).format(minor / 100);
 export const time = (iso: string) =>
   new Intl.DateTimeFormat("en-GB", {

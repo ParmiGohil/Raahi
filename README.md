@@ -21,10 +21,11 @@ If the machine's global npm 11.0 fails during install, use `npx npm@11.11.0 ci` 
 ## What works
 
 - Separate Trip workspace, My itinerary, Dependencies, What-if, Recovery and Add itinerary pages sharing one saved trip.
-- Manual booking entry/editing and multiple-PDF sample review. PDF extraction is explicitly simulated; files are not uploaded or parsed.
+- Manual bookings save immediately; all items are ordered by time and automatically connected (with manual/independent overrides). Actual PDF text is extracted locally using PDF.js, with original-page preview and review before saving. Scanned PDFs need manual entry; no OCR or model is used.
 - Animated Trip Health calculated from dependency impacts and applied recovery, on home and itinerary pages.
 - Actual versus suggested connection buffers, booking-level disruptions and a What-if preview that does not change saved state.
-- Personal itineraries support timing analysis and moving explicitly flexible commitments. No replacement availability or supplier prices are invented.
+- Personal itineraries support timing analysis, fixed-time constraints and moving explicitly flexible commitments. Additional transfer options use prominently labeled fictional timing/price assumptions and must pass timing/budget checks. No live supplier offers are claimed.
+- A persisted local profile, prominent quick actions, status-color borders and reduced-motion-aware hero/connection animation.
 - The existing simulated-AI copilot is preserved; no model connection or API key was added.
 - Connected itinerary, computed dependency impacts and proactive connection warnings.
 - Three delay recovery tradeoffs: ₹800, ₹1,800 and ₹2,300 cash now.
@@ -54,3 +55,7 @@ Local persistence uses `.raahi/` JSON, ignored by Git, with serialized transacti
 - [Collaboration](docs/COLLABORATION.md)
 
 Use named `codex/` branches and milestone commits. The earlier private planning archive is separate from this public repository; never push its history here.
+
+### PDF import scope
+
+Supported: labeled booking fields and day-number schedule tables with explicit date ranges. All source text remains available for review; unknown fields stay unknown. For schedules with start times only, imports preserve those times and mark missing duration/location/price. Health stays unscored until required timing/location details are supplied. PDF files are previewed/read in-browser, not uploaded or stored by the server. The reviewed itinerary is saved in the local trip repository. Bulk review supports up to 100 items.

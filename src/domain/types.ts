@@ -11,6 +11,10 @@ export type Segment = {
   priority?: boolean;
   changeDeadline?: string;
   flexible?: boolean;
+  fixedTime?: boolean;
+  connectionMode?: 'auto' | 'manual' | 'independent';
+  durationUnknown?: boolean;
+  locationUnknown?: boolean;
   recommendedBuffer?: number;
   start: string;
   end: string;
@@ -76,6 +80,7 @@ export type HistoryEntry = {
   actions: string[];
 };
 export type TripState = {
+  profile?: { name: string; email: string; city: string; travelStyle: string };
   mode?: "demo" | "personal";
   bookings?: Segment[];
   disruption?: Disruption | null;

@@ -19,7 +19,8 @@ export function PlanCard({
   disabled: boolean;
 }) {
   const event = plan.segments.find((s) => s.id === "event" || s.priority || s.kind === 'activity');
-  const personal = plan.id === 'reschedule';
+  const personal = ['reschedule', 'simulated-cab', 'simulated-priority'].includes(plan.id);
+  const simulated = plan.id.startsWith('simulated-');
   return (
     <article className={`plan-card ${plan.originalEvent ? "featured" : ""}`}>
       <div className="plan-tag">
@@ -30,7 +31,7 @@ export function PlanCard({
         ) : (
           <Wallet size={14} />
         )}
-        {personal ? 'Flexible schedule repair' : plan.originalEvent
+        {simulated ? 'Simulated transfer · fixed event kept' : personal ? 'Flexible schedule repair' : plan.originalEvent
           ? "Original moment saved · earliest concert"
           : plan.restMinutes > 0
             ? "More breathing room"
@@ -40,7 +41,7 @@ export function PlanCard({
       <p className="plan-subtitle">{plan.subtitle}</p>
       <div className="price">
         {formatMoney(plan.ledger.cashNow)}
-        <span>cash needed now</span>
+        <span>{simulated ? 'simulated cash estimate' : 'cash needed now'}</span>
       </div>
       <dl className="plan-key-metrics">
         <div>
@@ -56,6 +57,7 @@ export function PlanCard({
           <dd>{personal ? plan.changedIds.length : `${plan.restMinutes} min`}</dd>
         </div>
       </dl>
+      {simulated && <details className="plan-details"><summary>Simulation assumptions</summary>{plan.warnings.slice(1).map(w => <p key={w}>{w}</p>)}</details>}
       <details className="plan-details">
         <summary>
           Changes & finances <ChevronDown size={14} aria-hidden="true" />

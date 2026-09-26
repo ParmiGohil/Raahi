@@ -6,6 +6,7 @@ import type { Command } from "../domain/requests";
 import { initialState } from "../fixtures/trip";
 import { recoveryForState } from '../engine/journey';
 import { baseline } from '../fixtures/trip';
+import { organizeBookings } from '../engine/organize';
 
 export class Conflict extends Error {}
 export class InvalidPlan extends Error {}
@@ -114,14 +115,16 @@ export class TripRepository {
         );
       let next = structuredClone(state);
       if (command.action === "reset")
-        next = { ...initialState(), revision: state.revision };
+        next = { ...initialState(), profile: state.profile, revision: state.revision };
+      else if (command.action === 'profile') next.profile = command.profile;
       else if (command.action === 'itinerary') {
-        const ids = command.bookings.map(b => b.id);
+        const organized = organizeBookings(command.bookings);
+        const ids = organized.map(b => b.id);
         if (new Set(ids).size !== ids.length) throw new InvalidPlan('Booking IDs must be unique.');
-        for (let i = 0; i < command.bookings.length; i++) {
-          if (command.bookings[i].requires.some(id => !ids.slice(0, i).includes(id))) throw new InvalidPlan('A connection must refer to an earlier booking.');
+        for (let i = 0; i < organized.length; i++) {
+          if (organized[i].requires.some(id => !ids.slice(0, i).includes(id))) throw new InvalidPlan('An explicit connection must refer to an earlier booking. Select automatic connections to arrange by time.');
         }
-        next.mode = 'personal'; next.bookings = command.bookings; next.disruption = null;
+        next.mode = 'personal'; next.bookings = organized; next.disruption = null;
         if (state.mode !== 'personal') next.preferences = { protectOriginal: false, budget: 300000 };
         next.scenario = 'original'; next.applied = null; next.history = []; next.requests = [];
       }

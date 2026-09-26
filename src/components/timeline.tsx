@@ -22,7 +22,7 @@ const icons = {
 const labels = {
   direct: "Changed",
   blocked: "Needs repair",
-  "at-risk": "Tight connection",
+  "at-risk": "Connection at risk",
   unaffected: "On schedule",
 };
 export function Timeline({
@@ -45,7 +45,7 @@ export function Timeline({
             <div className="timeline-time">
               {time(segment.start)}
               <span>
-                {time(segment.end)}
+                {segment.durationUnknown ? 'Time only' : time(segment.end)}
               </span>
               <small>{new Date(segment.start).toLocaleDateString('en-GB', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short' })}</small>
             </div>
@@ -61,7 +61,7 @@ export function Timeline({
                       ? segment.id === "walk"
                         ? "Unchanged"
                         : "In your revised plan"
-                      : labels[state]}
+                      : segment.durationUnknown || segment.locationUnknown ? 'Details needed' : labels[state]}
                   </span>
                 </div>
                 <ChevronDown size={14} className="disclosure-chevron" />

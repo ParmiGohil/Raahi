@@ -82,7 +82,7 @@ Useful milestone checks: `npm test`, `npm run typecheck`, `npm run build`. Lates
 
 On the connected-experience branch, home offers **Try demo scenario** and **Add my itinerary**. My itinerary opens its own page. Use Dependencies to inspect timings/buffers, What-if to preview without saving, and Recovery to set a disruption and review/apply a plan. All pages read the same saved trip.
 
-Add my itinerary supports manual bookings and a clearly labeled PDF sample review; no document is uploaded or parsed. Confirm and save the draft before expecting other pages to update. Personal trips use entered details, not the fictional Goa replacement catalog. The existing simulated copilot remains available for the Goa demo.
+Add my itinerary saves each booking immediately. Upload PDFs to preview their original pages and extract actual text locally. Review individual entries or confirm all extracted schedule items before saving. The sample button remains explicitly fictional. Scanned/image-only PDFs require manual entry; no document is uploaded to a cloud service. Personal trips use entered details, not the fictional Goa replacement catalog. The existing simulated copilot remains available for the Goa demo.
 
 Latest extension gate: 17 tests and production build passed under Node 24, with browser checks of copilot, health, manual/PDF sample entry and persistence. If port 3000 serves an older checkout, use `npm start -- --port 3001` after building and open `http://127.0.0.1:3001`.
 

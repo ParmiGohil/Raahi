@@ -1,5 +1,20 @@
 # Current Raahi status
 
+## Latest follow-up — Actual PDF import and connected UX
+
+27 September 2026, approximately 02:45 IST (~8h15m before the documented freeze). Continues local `codex/raahi-connected-experience`.
+
+Implemented: immediate per-booking saves, chronological auto-connections with explicit overrides, a 100-item local limit, real local PDF.js text extraction, paginated original-PDF canvas preview inside the drop area, per-field/source review and bulk schedule import. Draft form fields survive reload in the same tab. Actual PDF data and the optional fictional sample flow remain separate.
+
+The supplied three-page Goa sample was verified in the browser: all 22 scheduled descriptions and start times across 12–15 November 2026 were extracted, saved, and persisted after reload. The PDF does not provide durations, booking prices/references or precise connection endpoints. Imports preserve that uncertainty; missing fields are not fabricated, and Trip Health remains unscored until timing/location data is complete. Scans and unsupported layouts still require manual review. No OCR or real AI was added.
+
+Visual changes: 3D-styled cards with a looping bidirectional light, subtle hero motion, pause/reduced-motion support, green/yellow/red booking borders, larger protected-event checkbox, prominent teal quick actions, persisted local profile, and removal of the language toggle. Existing copilot component and authored adapter are unchanged.
+
+Personal recovery preserves fixed event times. Two optional fictional transfer assumptions (10-minute pickup; 65% / 50% of the entered transfer duration, minimum 15 minutes; INR 1,200 / 1,800 each) are transparently labeled and checked against timings and budget. No options are offered when durations/locations are unknown or the fixed event cannot be reached. Existing Goa later-performance alternatives remain explicitly separate performances, not a shifted concert time.
+
+Verification evidence: actual user-PDF import and 22-item reload persistence, exact decimal extraction from a labeled two-booking PDF, out-of-order chronology, profile save/reload, desktop motion/preview inspection. Final gate: 23 tests passed, production build including TypeScript passed, 390px mobile layout inspected, and browser error/warning log empty. Test disruption was cleared; all 22 imported items remain saved. The user-supplied PDF remains untouched in Downloads; it is not committed. Local hosting remains the supported mode for larger personal itineraries.
+
+
 ## Latest milestone — Connected pages and personal itineraries
 
 27 September 2026, 00:45 IST (~10h15m before the documented freeze). Local branch `codex/raahi-connected-experience`, based on fetched main `0475d7c`. The older entries below are historical.
