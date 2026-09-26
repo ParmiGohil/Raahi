@@ -84,3 +84,7 @@ Raahi was empty when adopted and the connected account had write permission. The
 Assign one person to scaffold/shared contracts/engine/persistence and the other to UI/interaction/demo. Names are not yet assigned. Use separate clones, Codex tasks and feature branches; integrate small reviewed changes into `main`.
 
 Next milestone: a runnable sample trip, computed impacts and one validated recovery. Remaining open details are individual ownership, API access/budget, scenario date and airport, organizer submission requirements and pitch duration. See [CURRENT_STATUS.md](CURRENT_STATUS.md) for subsequent implementation progress.
+
+## Latest implementation direction
+
+The user has asked this Codex task to own the complete implementation without waiting on teammates. Build in the ordered milestones in `docs/IMPLEMENTATION_PLAN.md`, committing each milestone. Use tokens for implementation and run focused tests at milestone boundaries, not after every edit. `CURRENT_STATUS.md` is the current implementation evidence; earlier planning-only statements above are historical.
