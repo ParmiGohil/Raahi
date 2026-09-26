@@ -1,0 +1,25 @@
+# Local operating-system metadata
+.DS_Store
+Thumbs.db
+
+# Secrets and local environment configuration
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Dependencies and generated application output
+node_modules/
+.next/
+out/
+dist/
+coverage/
+playwright-report/
+test-results/
+*.log
+.vercel/
+
+# Historical local handoff archives
+exports/
+docs/session/
+/SESSION_MEMORY.json

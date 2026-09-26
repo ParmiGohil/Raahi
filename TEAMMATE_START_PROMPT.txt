@@ -1,0 +1,9 @@
+We are a two-person team building PS ID 2, a Travel Disruption Recovery Engine, for HackCelestial 3.0. This project contains the planning session's portable memory and research. Continue from these files rather than restarting the research.
+
+Read AGENTS.md, SESSION_MEMORY.md, CURRENT_STATUS.md, HACKATHON_ROADMAP.md, docs/BUILD_HANDOFF.md and docs/COLLABORATION.md. Inspect the actual files and Git state. Explain briefly what is already built versus only planned, and calculate time remaining against the published September 27, 2026, 11:00 AM IST deadline unless we provide an update.
+
+I am joining as the second teammate. The suggested division is Person A for scaffold/shared contracts/engine/persistence and Person B for UI/interaction/demo. Confirm my lane from the current ownership notes; if no lane has been assigned, ask me that one question while reviewing the plan. Do not create a second independent app scaffold alongside my teammate's scaffold.
+
+Once ownership and the shared scaffold/contracts are available, work on a separate feature branch and implement a bounded milestone in my lane. Preserve existing changes. The hero scenario uses fictional Mumbai–Goa inventory and exact recovery costs of INR 800, 1800 and 2300. Protecting the original 16:00 event must leave only the INR 2300 plan; a lower cash budget must produce an honest no-solution result.
+
+Keep feasibility and costs deterministic. Never invent live inventory or provider confirmations. Use computed engine responses in the UI, with shared fixture responses only as explicit development mocks until integration. Run relevant checks and report actual results. Record a concise handoff with completed behavior, changed contracts, tests, blockers and the next milestone.
