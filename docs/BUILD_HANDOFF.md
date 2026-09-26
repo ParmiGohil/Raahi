@@ -1,6 +1,6 @@
 # Build handoff — Travel Disruption Recovery Engine
 
-Read [the canonical roadmap](../HACKATHON_ROADMAP.md) first. This file is the short implementation checklist for future Codex sessions. It does not report a completed application.
+Read [the canonical roadmap](../HACKATHON_ROADMAP.md) first. This file retains the architectural checklist. The core application is implemented; use [current status](../CURRENT_STATUS.md), [verification evidence](VERIFICATION.md) and the actual code as implementation evidence.
 
 ## Current state
 
@@ -9,7 +9,10 @@ Read [the canonical roadmap](../HACKATHON_ROADMAP.md) first. This file is the sh
 - Chosen default: a fictional Mumbai–Goa itinerary with a flight delay, missed shuttle, hotel check-in constraint, and timed event.
 - Product: a recovery workspace with impact explanation, valid alternatives, a protected-event control, financial comparison, and itinerary update.
 - Research complete: engine, provider access, competitors, demo strategy, and event context.
-- Application code, API accounts, deployment, actual benchmark results, and team-specific development strengths have not been verified.
+- Core code and browser journey are verified on `codex/raahi-core`. Ten focused tests pass. Deployment, provider accounts and production latency are not verified.
+- Run with Node 24: `npm ci`, `npm run build`, `npm start`. Engine: `src/engine`; API: `src/app/api/trip/route.ts`; UI: `src/components`; local store: `src/repositories/trip.ts`.
+- Plain CSS replaces the suggested Tailwind dependency. Local atomic JSON is the chosen fallback. No Supabase account has been connected.
+- This task owns integration per the latest user decision. Build in batches; test at milestone gates, not after each edit.
 - Published freeze: September 27, 2026, 11:00 AM IST. Use the actual remaining time; do not restart a 24-hour clock.
 
 ## Non-negotiable behavior
@@ -64,7 +67,7 @@ applyPlan(planId, expectedRevision, idempotencyKey)
 
 These are proposed interfaces, not existing exports. Keep the validator independent of the search implementation; test both against authored expected outcomes.
 
-## First implementation session
+## Original foundation checklist (core now completed)
 
 1. Inspect the actual workspace and any instructions; preserve existing work.
 2. Recalculate time left and assign engine/UI ownership to the two people.

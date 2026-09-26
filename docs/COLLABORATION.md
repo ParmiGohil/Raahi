@@ -52,4 +52,4 @@ The original source workspace retains an earlier private planning branch/remote 
 
 The previous full conversation export and ZIP remain separate. Use the versioned project memory and status for ongoing coordination. The roadmap describes intended behavior; tests and the current code establish what is actually implemented.
 
-Each teammate uses their own GitHub credentials and local environment values. The app is not yet scaffolded, so no shared build command or package environment exists. Document these once created.
+Each teammate uses their own GitHub credentials and local environment values. Use Node 24, `npm ci`, `npm run dev`; `npm test` and `npm run build` are the milestone gates. The implemented baseline is on `codex/raahi-core`; the current task owns integration. Coordinate with CURRENT_STATUS.md before changing shared contracts.

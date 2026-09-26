@@ -14,7 +14,7 @@ The published schedule runs from September 26 at 11:00 AM IST to September 27 at
 
 Parallel research covered the engine, travel APIs, and product/demo strategy. The synthesis is in [HACKATHON_ROADMAP.md](HACKATHON_ROADMAP.md); detailed sources are in `docs/research/`. The worked scenario's critical timing and cash arithmetic were checked, and a consistency review tightened scope and risk classifications.
 
-Only planning and documentation exist. No application, runtime fixture catalog, database, automated application tests, deployment or benchmark results have been created. API research included a successful Open-Meteo read; authenticated travel providers were not tested with this team's accounts.
+The core application is now implemented on `codex/raahi-core`: deterministic engine, fixtures, API, local persistence and responsive recovery workspace. Ten engine/repository tests, production build and the integrated browser journey passed. See `docs/VERIFICATION.md` for actual evidence. No deployment, live provider or model integration is implemented. Earlier API research included a successful Open-Meteo read; authenticated travel providers were not tested with this team's accounts.
 
 ## Product decision
 
@@ -81,9 +81,9 @@ The current Amadeus portal reported Self-Service decommissioning; exclude it fro
 
 Raahi was empty when adopted and the connected account had write permission. The initial public history includes project documentation only. The prior private repository and full conversation handoff are retained separately; do not merge or push their entire history into this public repository.
 
-Assign one person to scaffold/shared contracts/engine/persistence and the other to UI/interaction/demo. Names are not yet assigned. Use separate clones, Codex tasks and feature branches; integrate small reviewed changes into `main`.
+The latest user decision assigns implementation/integration to this Codex task without waiting on teammates. Core work is on `codex/raahi-core`. Other contributors should coordinate from that contract and use separate branches; avoid rebuilding the scaffold.
 
-Next milestone: a runnable sample trip, computed impacts and one validated recovery. Remaining open details are individual ownership, API access/budget, scenario date and airport, organizer submission requirements and pitch duration. See [CURRENT_STATUS.md](CURRENT_STATUS.md) for subsequent implementation progress.
+Next milestones: persistent public hosting, submission assets, and gated optional enrichment. The fixed fixture uses GOI and 26–27 September 2026. Remaining open details are provider access/budget, submission requirements and pitch duration. See [CURRENT_STATUS.md](CURRENT_STATUS.md) for subsequent implementation progress.
 
 ## Latest implementation direction
 

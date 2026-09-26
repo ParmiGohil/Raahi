@@ -1,47 +1,47 @@
-# Raahi
+# Raahi · A way forward
 
-**Travel Disruption Recovery Engine · HackCelestial 3.0 · PS ID 2**
+A working travel disruption recovery prototype for HackCelestial PS ID 2. Explore a fictional Mumbai–Goa itinerary, see connection failures, compare constrained recovery plans, review costs and update the itinerary.
 
-Raahi is a proposed travel recovery workspace that explains disruption impacts across a connected itinerary, compares feasible repairs, and protects the traveler's most important commitments.
+## Run locally
 
-**Current stage:** roadmap and research complete; application implementation has not started. This repository is the shared home for the two-person team's work.
+Use Node **24** (`nvm install && nvm use` if nvm is installed).
 
-## Start contributing
-
-```bash
-git clone https://github.com/ParmiGohil/Raahi.git
-cd Raahi
+```sh
+npm ci
+npm run build
+npm start
 ```
 
-Open the clone as a local project in Codex and use [TEAMMATE_START_PROMPT.txt](TEAMMATE_START_PROMPT.txt) to start a task. The shared default branch is `main`. Each teammate should work on a separate feature branch and integrate through small reviewed pull requests.
+Open http://127.0.0.1:3000. For development use `npm run dev`. No API keys are required. `npm test` runs the focused engine/repository suite; `npm run typecheck` checks TypeScript.
 
-One person should create the initial app scaffold and shared data contract before both implement in parallel. Suggested lanes are engine/data/persistence and UI/interaction/demo; assign names before starting.
+If the machine's global npm 11.0 fails during install, use `npx npm@11.11.0 ci` under Node 24. Do not upgrade the system runtime during a live demo.
 
-## Read the shared context
+## What works
 
-| Document | Purpose |
-|---|---|
-| [Start here](START_HERE.md) | Onboarding and reading order |
-| [Current status](CURRENT_STATUS.md) | Actual progress and next milestone |
-| [Project memory](SESSION_MEMORY.md) | Product decisions, constraints and open details |
-| [Problem statement](docs/PROBLEM_STATEMENT.md) | The supplied hackathon challenge |
-| [Full roadmap](HACKATHON_ROADMAP.md) | Product scope, architecture, schedule and demonstration |
-| [Build handoff](docs/BUILD_HANDOFF.md) | Module contracts and acceptance criteria |
-| [Collaboration](docs/COLLABORATION.md) | File ownership, branches and integration |
-| [Engine research](docs/research/recovery-engine.md) | Recovery design and exact fictional scenario |
-| [API research](docs/research/travel-apis.md) | Provider access and integration limitations |
-| [Product/demo research](docs/research/product-and-demo.md) | Competitive evidence and presentation strategy |
+- Connected itinerary, computed dependency impacts and proactive connection warnings.
+- Three delay recovery tradeoffs: ₹800, ₹1,800 and ₹2,300 cash now.
+- Protected original concert and cash-budget constraints, including no-solution results.
+- Original-session cancellation and delay plus later-session cancellation.
+- Whole-route validation, review diff, separate cash/loss ledger, simulated apply and reset.
+- Isolated browser sessions; versioned atomic persistence; stale and repeated apply handling.
 
-## First milestone
+## Architecture and scope
 
-Build a loadable sample trip, computed disruption impacts, and one validated recovery path. The fictional Mumbai–Goa demo connects a delayed flight, missed transfer, hotel check-in constraint and timed event.
+Next.js App Router + React + TypeScript + Zod. Pure engine in `src/engine`; fixture catalog in `src/fixtures`; HTTP contract in `src/domain/requests.ts`; local repository in `src/repositories`; UI in `src/components`.
 
-The three authored plans cost ₹800, ₹1,800 and ₹2,300. Making the original event mandatory removes the first two; reducing the cash budget below ₹2,300 produces an honest no-solution result. These are test fixtures, not live offers or confirmed bookings.
+`GET /api/trip` loads the browser's session. `POST /api/trip` accepts scenario, preferences, apply and reset commands with an expected revision. Applying regenerates and validates the chosen plan on the server. A signed review expires after ten minutes.
 
-## Implementation status
+Everything involving schedules, fares, policies and inventory is **authored fixture data**. The fixed scenario clock is 26 September 2026 at 09:00 IST. There is no live booking or refund execution, live weather or LLM integration yet. No algorithmic global-optimum claim is made.
 
-No package manifest, application server, runtime tests or deployment exists yet. Proposed stack: Next.js/React/TypeScript with a deterministic engine and optional live/AI enrichment. Commands will be documented after scaffolding.
+Persistence is `.raahi/` JSON, ignored by Git, with serialized transactions and atomic file replacement. Run **one Node process on persistent storage**. Do not deploy this repository unchanged to an ephemeral serverless filesystem or multiple processes. Set `RAAHI_DATA_DIR` to an absolute persistent directory if needed and `RAAHI_HTTPS=true` behind HTTPS. Demo cookies are HttpOnly and SameSite Strict; this is not production account authentication. Restarting the server invalidates outstanding review signatures; refresh the browser before applying.
 
-Published event freeze: **27 September 2026, 11:00 AM IST**. Recalculate remaining time and use any newer official organizer instructions.
+## Project documents
 
-This public repository contains project guidance and research. The earlier full conversation export and ZIP remain separate handoff artifacts. Keep credentials and generated files out of commits.
+- [Current implementation status](CURRENT_STATUS.md)
+- [Ordered implementation milestones](docs/IMPLEMENTATION_PLAN.md)
+- [Canonical research roadmap](HACKATHON_ROADMAP.md)
+- [Build handoff](docs/BUILD_HANDOFF.md)
+- [Session memory](SESSION_MEMORY.md)
+- [Collaboration](docs/COLLABORATION.md)
+
+Use named `codex/` branches and milestone commits. The earlier private planning archive is separate from this public repository; never push its history here.

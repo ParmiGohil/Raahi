@@ -24,4 +24,4 @@ The shared repository is `ParmiGohil/Raahi`, using `main`. Its public initial hi
 
 One fictional Mumbai–Goa trip; a delay plus one simple activity-cancellation variant; connected impact analysis; valid recovery alternatives; protected-event and cash-budget controls; cost ledger; review/apply/persist/reset; one proactive warning. Broaden scenarios and add optional live weather only after the full loop works.
 
-Suggested directories and contracts appear in `docs/BUILD_HANDOFF.md`; none of the proposed application modules existed when this instruction file was created. No build/test command is established yet. Inspect the actual package manifest after scaffolding rather than assuming one exists.
+Implemented directories and contracts are in `src/` and described in `docs/BUILD_HANDOFF.md`. Use Node 24. Run `npm test`, `npm run typecheck` and `npm run build` at relevant milestone boundaries; do not repeat checks after every edit. `npm start` serves the local production demo. Preserve the current local single-process persistence limitation until a database adapter is deliberately introduced.
