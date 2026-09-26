@@ -160,3 +160,5 @@ Do not substitute a plan or generated test list for tests actually run. Keep the
 ### Copilot + hosting preparation (26 September, ~20:50 IST)
 
 Branch `codex/raahi-copilot-deploy` builds on UI `3ef49bc`. New components: `src/components/copilot.tsx`, authored adapter `src/demo/copilot.ts`, cookie repository `src/repositories/browser-session.ts`. New `copilot` command confirms scenario and preferences in one revision. Simulation is labeled; engine decisions remain deterministic. Hosting guide: `docs/HOSTING.md`. Vercel needs account login and a stable `RAAHI_SIGNING_SECRET` before deployment. No public URL yet. Cookie sessions are for isolated single-browser demos, not collaborative storage. Test gate: 13 tests and production build passed; integrated mobile confirmation/apply flow passed.
+
+Mobile navigation now uses a button-controlled disclosure in ProductShell at widths up to 1000px. Recovery priority styling is compact again, per user correction. Build and focused phone navigation check passed.
