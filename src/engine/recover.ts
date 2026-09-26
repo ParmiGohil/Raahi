@@ -76,11 +76,11 @@ export function evaluateImpacts(timeline: Segment[]): Impact[] {
       reason = `Schedule changed: ends ${time(segment.end)} instead of ${time(before.end)}.`;
     } else if (
       slack !== undefined &&
-      slack < 30 &&
+      slack < (segment.recommendedBuffer ?? 30) * 0.8 &&
       (segment.cutoff || segment.id === "pickup")
     ) {
       state = "at-risk";
-      reason = `${slack} min between services; below the authored 30 min advisory buffer. Still feasible.`;
+      reason = `${slack} min between services; below 80% of the authored ${segment.recommendedBuffer ?? 30} min advisory buffer. Still feasible.`;
     }
     result.push({
       id: segment.id,

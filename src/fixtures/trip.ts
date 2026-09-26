@@ -24,6 +24,7 @@ export function service(
     to,
     cash: cash * 100,
     requires: [],
+    recommendedBuffer: kind === 'exit' || kind === 'storage' || id === 'return' ? 0 : 30,
     evidence: "Authored demo inventory and policy; no supplier reservation.",
     available: true,
     ...extra,
@@ -45,6 +46,8 @@ export const baseline = (): Segment[] =>
       "11:00",
       "BOM",
       "GOI",
+      0,
+      { cost: 450000, reference: 'DEMO-SG201' },
     ),
     service(
       "exit",
@@ -64,7 +67,7 @@ export const baseline = (): Segment[] =>
       "GOI",
       "hotel",
       0,
-      { cutoff: at("11:50") },
+      { cutoff: at("11:50"), cost: 40000, reference: 'DEMO-SHUTTLE' },
     ),
     service(
       "checkin",
@@ -75,7 +78,7 @@ export const baseline = (): Segment[] =>
       "hotel",
       "hotel",
       0,
-      { windowStart: at("14:00"), windowEnd: at("18:00") },
+      { windowStart: at("14:00"), windowEnd: at("18:00"), cost: 380000, reference: 'DEMO-CASA-SOL' },
     ),
     service(
       "pickup",
@@ -95,7 +98,7 @@ export const baseline = (): Segment[] =>
       "venue",
       "venue",
       0,
-      { cutoff: at("15:45") },
+      { cutoff: at("15:45"), cost: 150000, reference: 'DEMO-CONCERT' },
     ),
     service(
       "return",

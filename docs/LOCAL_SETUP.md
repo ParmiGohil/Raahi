@@ -78,7 +78,15 @@ To hand the project to Codex, open the cloned `Raahi` folder and paste:
 
 Useful milestone checks: `npm test`, `npm run typecheck`, `npm run build`. Latest implementation gate passed 13 tests and the production build; the mobile copilot → review → apply → refresh flow was also verified.
 
-## What is still pending
+## Connected prototype walkthrough
+
+On the connected-experience branch, home offers **Try demo scenario** and **Add my itinerary**. My itinerary opens its own page. Use Dependencies to inspect timings/buffers, What-if to preview without saving, and Recovery to set a disruption and review/apply a plan. All pages read the same saved trip.
+
+Add my itinerary supports manual bookings and a clearly labeled PDF sample review; no document is uploaded or parsed. Confirm and save the draft before expecting other pages to update. Personal trips use entered details, not the fictional Goa replacement catalog. The existing simulated copilot remains available for the Goa demo.
+
+Latest extension gate: 17 tests and production build passed under Node 24, with browser checks of copilot, health, manual/PDF sample entry and persistence. If port 3000 serves an older checkout, use `npm start -- --port 3001` after building and open `http://127.0.0.1:3001`.
+
+## Remaining delivery work
 
 - Publish and verify a Vercel URL after account sign-in and deployment-secret configuration (see `docs/HOSTING.md`). Local setup does not depend on that.
 - Create the final PPT and rehearse the presentation.

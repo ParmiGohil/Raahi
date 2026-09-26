@@ -4,7 +4,8 @@ import path from "node:path";
 import type { TripState } from "../domain/types";
 import type { Command } from "../domain/requests";
 import { initialState } from "../fixtures/trip";
-import { recover } from "../engine/recover";
+import { recoveryForState } from '../engine/journey';
+import { baseline } from '../fixtures/trip';
 
 export class Conflict extends Error {}
 export class InvalidPlan extends Error {}
@@ -114,20 +115,39 @@ export class TripRepository {
       let next = structuredClone(state);
       if (command.action === "reset")
         next = { ...initialState(), revision: state.revision };
+      else if (command.action === 'itinerary') {
+        const ids = command.bookings.map(b => b.id);
+        if (new Set(ids).size !== ids.length) throw new InvalidPlan('Booking IDs must be unique.');
+        for (let i = 0; i < command.bookings.length; i++) {
+          if (command.bookings[i].requires.some(id => !ids.slice(0, i).includes(id))) throw new InvalidPlan('A connection must refer to an earlier booking.');
+        }
+        next.mode = 'personal'; next.bookings = command.bookings; next.disruption = null;
+        if (state.mode !== 'personal') next.preferences = { protectOriginal: false, budget: 300000 };
+        next.scenario = 'original'; next.applied = null; next.history = []; next.requests = [];
+      }
+      else if (command.action === 'disruption') {
+        const bookings = state.mode === 'personal' ? state.bookings ?? [] : baseline();
+        if (command.disruption && !bookings.some(b => b.id === command.disruption!.bookingId)) throw new InvalidPlan('Select a booking in this itinerary.');
+        next.disruption = command.disruption; next.applied = null; next.scenario = 'original';
+      }
       else if (state.applied)
         throw new Conflict(
           "This recovery is already applied. Reset the demo to explore another scenario.",
         );
       else if (command.action === "copilot") {
+        if (state.mode === 'personal') throw new InvalidPlan('The authored copilot uses the Goa demo. Use What-if for your itinerary.');
+        next.disruption = null;
         next.scenario = command.scenario;
         next.preferences = command.preferences;
-      } else if (command.action === "scenario")
-        next.scenario = command.scenario;
+      } else if (command.action === "scenario") {
+        if (state.mode === 'personal') throw new InvalidPlan('Use the booking disruption controls for your itinerary.');
+        next.disruption = null; next.scenario = command.scenario;
+      }
       else if (command.action === "preferences")
         next.preferences = command.preferences;
       else if (command.action === "apply") {
         verifyQuote(id, state.revision, command.quote);
-        const result = recover(state.scenario, state.preferences);
+        const result = recoveryForState(state);
         const plan = result.plans.find((p) => p.id === command.planId);
         if (!plan)
           throw new InvalidPlan(

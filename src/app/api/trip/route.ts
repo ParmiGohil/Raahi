@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { commandSchema } from "../../../domain/requests";
-import { recover } from "../../../engine/recover";
+import { recoveryForState } from '../../../engine/journey';
 import {
   repository,
   Conflict,
@@ -45,7 +45,7 @@ function payload(id: string, state: TripState) {
   const { requests: _requests, ...publicState } = state;
   return {
     state: publicState,
-    recovery: recover(state.scenario, state.preferences),
+    recovery: recoveryForState(state),
     quote: quoteFor(id, state.revision),
     persistence:
       process.env.RAAHI_STORAGE === "cookie" || process.env.VERCEL
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
     return json({ error: "JSON required." }, 415);
   try {
     const raw = await request.text();
-    if (raw.length > 10000)
+    if (raw.length > 50000)
       return json({ error: "Request is too large." }, 413);
     let parsed: unknown;
     try {

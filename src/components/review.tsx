@@ -149,7 +149,7 @@ export function Review({
               </p>
             ))}
             <p className="review-provenance">
-              Fixture inventory · review valid for 10 minutes
+              {plan.id === 'reschedule' ? 'User-entered timings · provider fees unverified' : 'Fixture inventory'} · review valid for 10 minutes
             </p>
           </div>
           <div className="review-footer">

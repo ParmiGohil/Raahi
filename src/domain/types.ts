@@ -1,11 +1,17 @@
-export type Place = "BOM" | "GOI" | "hotel" | "venue";
+export type Place = string;
 export type Scenario =
   "original" | "delay" | "activity-cancelled" | "delay-later-cancelled";
 export type Preferences = { protectOriginal: boolean; budget: number };
 export type Segment = {
   id: string;
   title: string;
-  kind: "flight" | "exit" | "transfer" | "checkin" | "activity" | "storage";
+  kind: "flight" | "train" | "exit" | "transfer" | "checkin" | "activity" | "storage";
+  reference?: string;
+  cost?: number;
+  priority?: boolean;
+  changeDeadline?: string;
+  flexible?: boolean;
+  recommendedBuffer?: number;
   start: string;
   end: string;
   from: Place;
@@ -70,6 +76,9 @@ export type HistoryEntry = {
   actions: string[];
 };
 export type TripState = {
+  mode?: "demo" | "personal";
+  bookings?: Segment[];
+  disruption?: Disruption | null;
   revision: number;
   scenario: Scenario;
   preferences: Preferences;
@@ -77,3 +86,4 @@ export type TripState = {
   history: HistoryEntry[];
   requests: { key: string; fingerprint: string; revision: number }[];
 };
+export type Disruption = { bookingId: string; type: "delay" | "cancelled" | "late-checkin" | "unavailable" | "traveler-change"; minutes: number };

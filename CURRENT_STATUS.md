@@ -1,5 +1,19 @@
 # Current Raahi status
 
+## Latest milestone — Connected pages and personal itineraries
+
+27 September 2026, 00:45 IST (~10h15m before the documented freeze). Local branch `codex/raahi-connected-experience`, based on fetched main `0475d7c`. The older entries below are historical.
+
+Implemented: six dedicated routes, shared session state, Try demo/Add my itinerary entry points, manual entry/editing, sample PDF verification queue, interactive dependency and buffer display, booking-specific disruptions, isolated What-if preview, and dynamic Trip Health. Existing copilot UI and authored AI adapter remain unchanged, as requested. No real model or provider connection was added.
+
+Health uses actual engine impacts: start 95, subtract 4 per at-risk booking, 12 per directly affected booking, 10 per blocked booking; clamp to 0–95. Applied itineraries are re-analyzed with 8 points reserved for pending provider actions. Verified demo sequence: 87 original → 21 with flight delay → 75 after the protected-concert recovery. This is an explained planning indicator, not a success probability.
+
+Personal recovery only moves explicitly flexible commitments, respects priority and location constraints, and otherwise returns no verified offer. PDF import loads editable sample fields, requires confirmation, and does not parse or upload documents. Navigation labels support EN/HI; detailed content stays English. Authored prepaid demo costs total ₹10,200; recovery cash/loss arithmetic is preserved.
+
+Verification: 17 tests passed; production build including TypeScript passed under Node 24. Browser checks covered dedicated navigation, unchanged ₹2,300 copilot preview under ₹2,500, review/apply and health improvement, manual entry, personal flexible recovery, PDF sample verification/editing, reload persistence, and What-if isolation. Desktop and 390px mobile layouts inspected. Production preview runs on port 3001 in the separate `Raahi-main-demo` worktree; original `parmi` checkout is preserved. No publish/deploy was performed.
+
+Next: user review of this local implementation, then integrate the intended branch if requested. Hosting still requires a persistence solution appropriate for larger personal itineraries; the existing encrypted-cookie demo adapter has size limits. Do not claim PDF extraction, full translation, live AI, or supplier execution.
+
 Updated 26 September 2026, 20:14 IST (~14h46m remaining). Published freeze: 27 September, 11:00 IST.
 
 ## Repository and ownership

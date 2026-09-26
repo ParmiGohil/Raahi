@@ -6,11 +6,13 @@ import {
   Luggage,
   Footprints,
   ChevronDown,
+  TrainFront,
 } from "lucide-react";
 import type { Impact, Segment } from "../domain/types";
-import { time } from "../engine/recover";
+import { time, formatMoney } from "../engine/recover";
 const icons = {
   flight: Plane,
+  train: TrainFront,
   exit: Luggage,
   transfer: CarFront,
   checkin: Hotel,
@@ -34,7 +36,7 @@ export function Timeline({
 }) {
   return (
     <ol className="timeline">
-      {segments.map((segment) => {
+      {[...segments].sort((a, b) => Date.parse(a.start) - Date.parse(b.start)).map((segment) => {
         const impact = impacts.find((i) => i.id === segment.id);
         const state = applied ? "unaffected" : (impact?.state ?? "unaffected");
         const Icon = segment.id === "walk" ? Footprints : icons[segment.kind];
@@ -43,8 +45,9 @@ export function Timeline({
             <div className="timeline-time">
               {time(segment.start)}
               <span>
-                {segment.id === "walk" ? "27 SEP" : time(segment.end)}
+                {time(segment.end)}
               </span>
+              <small>{new Date(segment.start).toLocaleDateString('en-GB', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short' })}</small>
             </div>
             <span className="timeline-icon">
               <Icon size={17} />
@@ -71,6 +74,10 @@ export function Timeline({
                   ? ` · check-in by ${time(segment.windowEnd)}`
                   : ""}
               </p>
+              {segment.reference && <p className="muted">Reference: {segment.reference}</p>}
+              {segment.cost !== undefined && <p className="muted">Already-paid cost: {formatMoney(segment.cost)}</p>}
+              {segment.priority && <p className="muted">Must-save commitment · original timing protected</p>}
+              {segment.changeDeadline && <p className="muted">Your change deadline: {new Date(segment.changeDeadline).toLocaleString('en-GB', { timeZone: 'Asia/Kolkata' })} IST. Provider policy unverified.</p>}
               {!applied && impact?.causes.length ? (
                 <p className="muted">
                   Depends on:{" "}

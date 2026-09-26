@@ -1,4 +1,2 @@
-import Workspace from "../components/workspace";
-export default function Page() {
-  return <Workspace />;
-}
+import { HomePage } from '../components/journey-pages';
+export default function Page() { return <HomePage />; }

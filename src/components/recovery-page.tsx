@@ -1,0 +1,31 @@
+'use client';
+import Link from 'next/link';
+import { useState } from 'react';
+import { ArrowRight, RefreshCw, ShieldCheck, Sparkles, Check } from 'lucide-react';
+import type { Plan } from '../domain/types';
+import { useTrip } from './trip-provider';
+import { PageHeading, LoadingTrip } from './journey-pages';
+import { TripHealth } from './trip-health';
+import { PlanCard } from './plan-card';
+import { Review } from './review';
+import { Copilot } from './copilot';
+import { DependencyGraph } from './dependency-graph';
+import { DisruptionForm } from './disruption-form';
+import { baseline } from '../fixtures/trip';
+export function RecoveryPage() {
+  const { data, busy, error, mutate } = useTrip(); const [selected, setSelected] = useState<Plan | null>(null); const [key, setKey] = useState(''); const [budget, setBudget] = useState<string | null>(null);
+  if (!data) return <LoadingTrip />;
+  const { state, recovery } = data; const disrupted = state.scenario !== 'original' || !!state.disruption; const personal = state.mode === 'personal';
+  return <><PageHeading eyebrow="YOUR WAY FORWARD" title="Protect the good part." description="Choose a disruption, set your priorities, and review a plan before changing your itinerary."><button className="button outline" disabled={busy} onClick={() => { if (personal) mutate({ action: 'disruption', disruption: null }); else mutate({ action: 'reset' }); }}> <RefreshCw size={15} /> {personal ? 'Clear disruption' : 'Reset demo'}</button></PageHeading>
+    <div className="recovery-top"><section className="overview-card"><p className="eyebrow">PUT YOUR PLANS TO THE TEST</p><h2>One change. See the whole trip respond.</h2>{!personal && <div className="scenario-pills">{[['delay', 'Flight delay · 3h'], ['activity-cancelled', 'Concert cancelled'], ['delay-later-cancelled', 'Combined disruption']].map(([id, label]) => <button key={id} disabled={busy || !!state.applied} className={state.scenario === id ? 'selected' : ''} onClick={() => mutate({ action: 'scenario', scenario: id })}>{label}</button>)}</div>}<details className="custom-disruption" open={personal}><summary>{personal ? 'Disrupt a booking in your itinerary' : 'Choose a specific booking or delay'}</summary><DisruptionForm bookings={personal ? state.bookings ?? [] : baseline()} busy={busy || !!state.applied} onRun={disruption => mutate({ action: 'disruption', disruption })} /></details><small>All disruptions are simulations. No supplier is contacted.</small></section><TripHealth compact /></div>
+    {!personal && !state.applied && !state.disruption && <Copilot scenario={state.scenario} busy={busy} onApply={draft => mutate({ action: 'copilot', ...draft })} />}
+    {state.applied ? <section className="recovery-success"><span><Check size={26} /></span><div><p className="eyebrow">RECOVERY APPLIED TO YOUR ITINERARY</p><h2>Your journey has a way forward.</h2><p>{state.applied.title}. Your timings, dependencies and Trip Health have updated. Supplier actions remain pending.</p></div><Link href="/itinerary" className="button primary">See updated itinerary <ArrowRight size={16} /></Link></section> : disrupted ? <>
+      <div className="recovery-heading"><div><p className="eyebrow">YOUR PRIORITIES GUIDE THE PLAN</p><h2>A recovery that works for you.</h2></div><form className="preferences-form" onSubmit={e => { e.preventDefault(); mutate({ action: 'preferences', preferences: { ...state.preferences, budget: Math.round(Number(budget ?? state.preferences.budget / 100) * 100) } }); setBudget(null); }}><label className="priority-toggle"><input type="checkbox" checked={state.preferences.protectOriginal} disabled={busy} onChange={e => mutate({ action: 'preferences', preferences: { ...state.preferences, protectOriginal: e.target.checked } })} /><ShieldCheck size={16} /> Protect my important event</label><label>Extra cash limit (₹)<input aria-label="Extra cash limit" type="number" min="0" max="100000" required value={budget ?? String(state.preferences.budget / 100)} onChange={e => setBudget(e.target.value)} /></label><button className="button outline" disabled={busy}>Save limit</button></form></div>
+      {recovery.plans.length ? <><div className="strategy-labels"><span>Compare cash, timing and the moment you want to keep.</span><small>Only feasible options from available information are shown.</small></div><div className="recovery-plan-grid">{recovery.plans.map(plan => <PlanCard key={plan.id} plan={plan} disabled={busy} onReview={p => { setSelected(p); setKey(crypto.randomUUID()); }} />)}</div></> : <section className="empty-card no-plans"><ShieldCheck size={32} /><h2>No plan meets the current constraints.</h2><p>{personal || state.disruption ? 'No verified replacement catalog is available for this scenario. You can edit confirmed details or change the disruption; availability and fees must be checked with providers.' : 'Try increasing your cash limit or allowing a later concert. We will not silently change a protected event.'}</p></section>}
+      {recovery.rejections.length > 0 && <details className="rejections"><summary>Why other options were ruled out</summary>{recovery.rejections.map(r => <div key={r.title}><strong>{r.title}</strong><ul>{r.reasons.map(reason => <li key={reason}>{reason}</li>)}</ul></div>)}</details>}
+      <details className="cascade-details"><summary><Sparkles size={16} /> Follow the disruption through your trip</summary><DependencyGraph segments={recovery.timeline} recovery={recovery} /></details>
+    </> : <section className="recovery-ready"><Sparkles size={32} /><h2>Start with a change.<br /><em>Find your way forward.</em></h2><p>Use the controls above to see impacts and recovery choices. For a preview that leaves your saved trip alone, open What-if.</p><Link href="/what-if" className="button outline">Explore What-if <ArrowRight size={16} /></Link></section>}
+    <Review plan={selected} before={recovery.timeline} busy={busy} error={error} onClose={() => setSelected(null)} onApply={async () => { if (selected && await mutate({ action: 'apply', planId: selected.id, quote: data.quote, idempotencyKey: key })) setSelected(null); }} />
+  </>;
+}
+

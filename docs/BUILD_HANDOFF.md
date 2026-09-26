@@ -4,6 +4,14 @@ Read [the canonical roadmap](../HACKATHON_ROADMAP.md) first. This file retains t
 
 ## Current state
 
+### Connected experience extension (27 September 2026)
+
+Local branch `codex/raahi-connected-experience` extends main `0475d7c`. Routes: `/`, `/itinerary`, `/add-itinerary`, `/dependencies`, `/what-if`, `/recovery`. `TripProvider` shares revisioned server state; `journey.ts` supplies generic timing analysis, flexible rescheduling and health. Existing demo engine and copilot remain the source of Goa recovery offers. New API commands: `itinerary` and `disruption`; server validation rejects duplicate IDs, dangling/cyclic dependencies and stale revisions.
+
+Keep the copilot simulated. PDF verification is a labeled sample workflow with no extraction/upload. Personal trips never inherit demo concert preferences or invented replacement inventory. The What-if page computes in memory only. The original demo costs and recovery ledgers remain separate: authored prepaid booking costs total ₹10,200 (flight ₹4,500, shuttle ₹400, hotel ₹3,800, concert ₹1,500).
+
+Actual gate: 17 tests, TypeScript through production build, and browser flows passed. Health was verified at 87 → 21 → 75 for original → three-hour delay → protected-concert recovery. Read the latest CURRENT_STATUS entry for scope and limits. Preserve `.env` and `.raahi` data; local mode requires no external accounts. Do not assume large personal itineraries fit the existing hosting cookie adapter.
+
 - User: a two-person hackathon team; Codex will help implement the product.
 - Goal: a competitive, complete PS ID 2 prototype within the event deadline.
 - Chosen default: a fictional Mumbai–Goa itinerary with a flight delay, missed shuttle, hotel check-in constraint, and timed event.

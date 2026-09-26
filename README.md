@@ -20,6 +20,12 @@ If the machine's global npm 11.0 fails during install, use `npx npm@11.11.0 ci` 
 
 ## What works
 
+- Separate Trip workspace, My itinerary, Dependencies, What-if, Recovery and Add itinerary pages sharing one saved trip.
+- Manual booking entry/editing and multiple-PDF sample review. PDF extraction is explicitly simulated; files are not uploaded or parsed.
+- Animated Trip Health calculated from dependency impacts and applied recovery, on home and itinerary pages.
+- Actual versus suggested connection buffers, booking-level disruptions and a What-if preview that does not change saved state.
+- Personal itineraries support timing analysis and moving explicitly flexible commitments. No replacement availability or supplier prices are invented.
+- The existing simulated-AI copilot is preserved; no model connection or API key was added.
 - Connected itinerary, computed dependency impacts and proactive connection warnings.
 - Three delay recovery tradeoffs: ₹800, ₹1,800 and ₹2,300 cash now.
 - Protected original concert and cash-budget constraints, including no-solution results.

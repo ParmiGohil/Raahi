@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import './product.css';
+import { ProductShell } from '../components/product-shell';
 export const metadata: Metadata = {
   title: "Raahi · A way forward",
   description:
@@ -12,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body><ProductShell>{children}</ProductShell></body>
     </html>
   );
 }

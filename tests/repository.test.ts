@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { TripRepository, quoteFor } from "../src/repositories/trip";
+import { baseline } from '../src/fixtures/trip';
 const id = "a".repeat(64);
 const temporary: string[] = [];
 async function setup() {
@@ -17,6 +18,16 @@ afterEach(async () => {
   );
 });
 describe("versioned local itinerary transactions", () => {
+  it('saves personal bookings, clears demo preferences and rejects dangling dependencies', async () => {
+    const { repo, dir } = await setup();
+    await repo.update(id, { action: 'copilot', scenario: 'delay', preferences: { protectOriginal: true, budget: 250000 }, expectedRevision: 1 });
+    const saved = await repo.update(id, { action: 'itinerary', bookings: baseline().slice(0, 2), expectedRevision: 2 });
+    expect(saved.mode).toBe('personal');
+    expect(saved.preferences.protectOriginal).toBe(false);
+    expect((await new TripRepository(dir).read(id)).bookings).toHaveLength(2);
+    await expect(repo.update(id, { action: 'itinerary', bookings: [{ ...baseline()[0], requires: ['missing'] }], expectedRevision: 3 })).rejects.toThrow('earlier booking');
+    expect((await repo.read(id)).revision).toBe(3);
+  });
   it("persists a plan, deduplicates retries, reloads from disk and resets with monotonic revision", async () => {
     const { repo, dir } = await setup();
     const delayed = await repo.update(id, {

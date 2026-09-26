@@ -18,7 +18,8 @@ export function PlanCard({
   onReview: (plan: Plan) => void;
   disabled: boolean;
 }) {
-  const event = plan.segments.find((s) => s.id === "event")!;
+  const event = plan.segments.find((s) => s.id === "event" || s.priority || s.kind === 'activity');
+  const personal = plan.id === 'reschedule';
   return (
     <article className={`plan-card ${plan.originalEvent ? "featured" : ""}`}>
       <div className="plan-tag">
@@ -29,8 +30,8 @@ export function PlanCard({
         ) : (
           <Wallet size={14} />
         )}
-        {plan.originalEvent
-          ? "Original moment saved"
+        {personal ? 'Flexible schedule repair' : plan.originalEvent
+          ? "Original moment saved · earliest concert"
           : plan.restMinutes > 0
             ? "More breathing room"
             : "Lowest cash option"}
@@ -44,15 +45,15 @@ export function PlanCard({
       <dl className="plan-key-metrics">
         <div>
           <dt>
-            <Music2 size={14} aria-hidden="true" /> Concert session
+            <Music2 size={14} aria-hidden="true" /> {personal ? 'Event / activity' : 'Concert session'}
           </dt>
-          <dd>{time(event.start)}</dd>
+          <dd>{event ? time(event.start) : 'No event'}</dd>
         </div>
         <div>
           <dt>
-            <Clock3 size={14} aria-hidden="true" /> Rest at hotel
+            <Clock3 size={14} aria-hidden="true" /> {personal ? 'Commitments moved' : 'Rest at hotel'}
           </dt>
-          <dd>{plan.restMinutes} min</dd>
+          <dd>{personal ? plan.changedIds.length : `${plan.restMinutes} min`}</dd>
         </div>
       </dl>
       <details className="plan-details">
