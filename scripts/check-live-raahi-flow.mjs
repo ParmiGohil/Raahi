@@ -3,11 +3,19 @@ import { randomUUID } from 'node:crypto';
 const origin = process.argv[2] || 'http://127.0.0.1:3001';
 const start = await fetch(`${origin}/api/trip`);
 if (!start.ok) throw new Error(`Trip start HTTP ${start.status}`);
-const cookie = start.headers.get('set-cookie')?.split(';')[0];
-if (!cookie) throw new Error('Demo session cookie missing');
+const cookies = new Map();
+function remember(response) {
+  for (const line of response.headers.getSetCookie()) {
+    const [pair] = line.split(';'); const divider = pair.indexOf('=');
+    if (divider > 0) cookies.set(pair.slice(0, divider), pair.slice(divider + 1));
+  }
+}
+remember(start);
+if (!cookies.has('raahi-session')) throw new Error('Demo session cookie missing');
 const initial = await start.json();
 async function post(path, body) {
-  const response = await fetch(`${origin}${path}`, { method: 'POST', headers: { Origin: origin, Cookie: cookie, 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(40000) });
+  const response = await fetch(`${origin}${path}`, { method: 'POST', headers: { Origin: origin, Cookie: [...cookies].map(([name, value]) => `${name}=${value}`).join('; '), 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(40000) });
+  remember(response);
   const value = await response.json();
   if (!response.ok) throw new Error(`${path} HTTP ${response.status}: ${value.error ?? 'unknown error'}`);
   return value;
