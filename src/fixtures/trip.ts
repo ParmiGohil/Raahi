@@ -67,7 +67,7 @@ export const baseline = (): Segment[] =>
       "GOI",
       "hotel",
       0,
-      { cutoff: at("11:50"), cost: 40000, reference: 'DEMO-SHUTTLE' },
+      { recommendedBuffer: 20, evidence: "Demo assumption: baggage collection is complete; allow 20 minutes to reach shuttle boarding at the same airport.", cutoff: at("11:50"), cost: 40000, reference: 'DEMO-SHUTTLE' },
     ),
     service(
       "checkin",
@@ -88,6 +88,8 @@ export const baseline = (): Segment[] =>
       "15:20",
       "hotel",
       "venue",
+      0,
+      { recommendedBuffer: 15, evidence: "Demo assumption: included pickup is at the hotel lobby; allow 15 minutes after check-in." },
     ),
     service(
       "event",

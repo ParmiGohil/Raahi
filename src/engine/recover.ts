@@ -144,7 +144,7 @@ export function recover(
     plans: [],
     rejections: [],
     warning:
-      "Original shuttle: airport-ready 11:30, boarding closes 11:50. Only 20 minutes of slack; advisory buffer is 30 minutes.",
+      "Demo planning assumptions: 20 minutes from completed baggage collection to shuttle boarding, and 15 minutes from check-in to pickup at the same hotel. Provider details remain fictional.",
     provenance: "fixture",
   };
   if (scenario === "original") return result;

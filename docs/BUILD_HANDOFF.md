@@ -162,3 +162,8 @@ Do not substitute a plan or generated test list for tests actually run. Keep the
 Branch `codex/raahi-copilot-deploy` builds on UI `3ef49bc`. New components: `src/components/copilot.tsx`, authored adapter `src/demo/copilot.ts`, cookie repository `src/repositories/browser-session.ts`. New `copilot` command confirms scenario and preferences in one revision. Simulation is labeled; engine decisions remain deterministic. Hosting guide: `docs/HOSTING.md`. Vercel needs account login and a stable `RAAHI_SIGNING_SECRET` before deployment. No public URL yet. Cookie sessions are for isolated single-browser demos, not collaborative storage. Test gate: 13 tests and production build passed; integrated mobile confirmation/apply flow passed.
 
 Mobile navigation now uses a button-controlled disclosure in ProductShell at widths up to 1000px. Recovery priority styling is compact again, per user correction. Build and focused phone navigation check passed.
+
+
+Weather Twin first stage: see latest CURRENT_STATUS. New files engine/weather.ts, components/weather-twin.tsx and api/weather/route.ts. No model key needed. Nugen and calibrated/learning prediction layer deliberately deferred. Existing copilot and saved itinerary unchanged.
+
+Nugen recovery fallback milestone: read docs/nugen/DIAGNOSIS.md before enabling live inference. /api/recovery/insight is an optional read-only explanation; never route plan application through it. NUGEN_RECOVERY_ENABLED defaults off; missing trained model remains the provider blocker. Eight new focused tests and complete browser fallback/apply/graph flow passed.

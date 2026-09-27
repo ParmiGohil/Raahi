@@ -4,11 +4,12 @@ import { validateTrip } from "../src/engine/validate";
 import { at, baseline, catalog } from "../src/fixtures/trip";
 const preferences = { protectOriginal: false, budget: 300000 };
 describe("authored Mumbai–GOI recovery scenarios", () => {
-  it("accepts baseline while warning on the tight shuttle", () => {
+  it("accepts the baseline with sufficient authored pickup buffers", () => {
     expect(validateTrip(baseline(), preferences, baseline())).toEqual([]);
     const result = recover("original", preferences);
+    expect(result.impacts.every(i => i.state === "unaffected")).toBe(true);
     expect(result.impacts.find((i) => i.id === "transfer")).toMatchObject({
-      state: "at-risk",
+      state: "unaffected",
       slack: 20,
     });
   });
