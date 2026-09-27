@@ -22,10 +22,16 @@ describe('isolated Nugen recovery advisory', () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
   it('rejects malformed and plan-bearing model output', async () => {
-    for (const content of ['not JSON', JSON.stringify({ message: 'An explanation', plans: [{ price: 1 }] })]) {
+    for (const content of [JSON.stringify({ message: 'An explanation', plans: [{ price: 1 }] }), 'You will receive a ₹230,000 refund.', 'Your cab is confirmed and available.']) {
       const advisor = createRecoveryAdvisor(async () => Response.json({ choices: [{ message: { content } }] }));
       expect((await advisor(state, recoveryForState(state), config)).source).toBe('simulation');
     }
+  });
+  it('accepts a guarded plain-text response from the live model shape', async () => {
+    const advisor = createRecoveryAdvisor(async () => Response.json({ choices: [{ message: { content: 'The airport transfer needs attention after a delayed flight.' } }] }));
+    const result = await advisor(state, recoveryForState(state), config);
+    expect(result.source).toBe('nugen');
+    expect(result.message).toContain('supplier actions remain simulated');
   });
   it('bounds a slow provider request', async () => {
     const advisor = createRecoveryAdvisor((_url, options) => new Promise((_resolve, reject) => {

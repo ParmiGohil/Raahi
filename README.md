@@ -26,7 +26,7 @@ If the machine's global npm 11.0 fails during install, use `npx npm@11.11.0 ci` 
 - Actual versus suggested connection buffers, booking-level disruptions and a What-if preview that does not change saved state.
 - Personal itineraries support timing analysis, fixed-time constraints and moving explicitly flexible commitments. Additional transfer options use prominently labeled fictional timing/price assumptions and must pass timing/budget checks. No live supplier offers are claimed.
 - A persisted local profile, prominent quick actions, status-color borders and reduced-motion-aware hero/connection animation.
-- The existing simulated-AI copilot is preserved; no model connection or API key was added.
+- The existing copilot remains an explicitly labeled simulation. A separate, optional server-side Nugen aligned model can explain weather exposure and engine-checked recovery options; it never generates or applies plans. Local use works without Nugen.
 - Connected itinerary, computed dependency impacts and proactive connection warnings.
 - Three delay recovery tradeoffs: ₹800, ₹1,800 and ₹2,300 cash now.
 - Protected original concert and cash-budget constraints, including no-solution results.
@@ -40,7 +40,7 @@ Next.js App Router + React + TypeScript + Zod. Pure engine in `src/engine`; fixt
 
 `GET /api/trip` loads the browser's session. `POST /api/trip` accepts scenario, preferences, copilot preview confirmation, apply and reset commands with an expected revision. Applying regenerates and validates the chosen plan on the server. A signed review expires after ten minutes.
 
-Everything involving schedules, fares, policies and inventory is **authored fixture data**. The fixed scenario clock is 26 September 2026 at 09:00 IST. There is no live booking or refund execution, live weather or real LLM integration. The copilot replays three explicitly labeled authored requests, with real deterministic feasibility checks. No algorithmic global-optimum claim is made.
+Everything involving demo schedules, fares, policies and inventory is **authored fixture data**. The fixed scenario clock is 26 September 2026 at 09:00 IST. There is no live booking or refund execution. Weather Twin reads live forecasts, but its delay calculation uses untrained rules. The copilot replays three explicitly labeled authored requests with real deterministic feasibility checks. The optional Nugen model provides advisory explanations outside the copilot; no algorithmic global-optimum or calibrated weather-accuracy claim is made.
 
 Local persistence uses `.raahi/` JSON, ignored by Git, with serialized transactions and atomic file replacement in one Node process. Vercel automatically uses encrypted HTTP-only browser-session cookies instead, so no ephemeral filesystem writes are needed. Set a stable `RAAHI_SIGNING_SECRET` before hosting. Hosted sessions are individual demos, not collaborative database records; concurrent serverless requests have no transactional database guarantee. See [hosting and demo instructions](docs/HOSTING.md).
 

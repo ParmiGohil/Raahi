@@ -1,5 +1,11 @@
 # Current Raahi status
 
+## Nugen aligned model connected locally — 27 September 2026, 11:15 IST
+
+Nugen API verified alignment `alignment_01m3gn4p5039dq4r` READY at 100% and model `model_01m3gn6n5dnptvhh` DEPLOYED. The provider reports that its automatic evaluation never ran, so no accuracy claim is made. A real weather advisory returned through Raahi's server route. A real recovery advisory was also verified in a fresh demo session: disruption → Nugen explanation → engine-checked ₹2,300 option under ₹2,500 → applied nine-booking itinerary. The copilot remains explicitly simulated; Nugen explains the engine's result and never creates or applies plans. An earlier live recovery probe misread paise as rupees; current output instructions prohibit monetary claims and the adapter rejects them. Invalid/unavailable model output falls back to the existing simulation.
+
+Local ignored `.env.local` contains the model and alignment IDs, the pre-existing API key and `NUGEN_RECOVERY_ENABLED=true`; none are committed. Node 24: 45 tests and production build/TypeScript passed. The local preview is `http://127.0.0.1:3001`. Hosted deployment still needs its own secret/environment setup and a deployment check; no website deployment was made.
+
 ## Optional traveler profile — 27 September 2026
 
 Expanded the local profile with optional recovery priority, travel pace, transport and stay preferences, interests, and a short free-text note. Existing saved name, email, home city, and travel style are preserved. All fields can be left blank. The recovery priority only reorders the existing valid plan cards (lower cost, more rest, keeping experiences, or fewer changes); feasibility, budget, protected events, and the simulated copilot are unchanged. Other preferences are saved for later personalization and are not claimed to affect recommendations yet.

@@ -13,7 +13,7 @@ Set `RAAHI_SIGNING_SECRET` to a random value of at least 32 characters in both V
 
 Node 24 is selected through package.json. Framework: Next.js. Build: `npm run build`. Root: repository root. No model API key, paid database, real supplier account or booking integration is required.
 
-Deploy the intended `codex/raahi-copilot-deploy` checkout with the Vercel CLI. Do not upload private archives, `.raahi`, `.env` files or the separate planning Git history. `.vercelignore` restricts uploaded context.
+The current integrated website branch is `codex/raahi-connected-experience`. Deploy this branch only after confirming the intended production branch and configuring `RAAHI_SIGNING_SECRET`. For optional live Nugen advisories, also configure `NUGEN_API_KEY`, `NUGEN_ALIGNMENT_ID`, `NUGEN_ALIGNED_MODEL_ID` and `NUGEN_RECOVERY_ENABLED=true` in the hosting environment. Keep credentials server-side; never upload `.env.local`, `.raahi` or private archives. If Nugen is unavailable, Raahi displays its labeled simulation fallback. `.vercelignore` restricts uploaded context. The hosted cookie mode is intended for the small fictional demo; larger personal/PDF itineraries need hosted persistence before production use.
 
 ## Presentation flow
 

@@ -1,5 +1,9 @@
 # Nugen integration blocker — 27 September 2026, 01:04 UTC
 
+## Resolution observed — 27 September 2026, 05:40 UTC
+
+A later alignment, `alignment_01m3gn4p5039dq4r`, reached READY at 100% and produced `model_01m3gn6n5dnptvhh`. Deployment status is DEPLOYED with no error. Authenticated inference returned HTTP 200, and Raahi's local weather and recovery API routes each returned a model-backed advisory. The automatic evaluation stage reports `evaluation_never_ran_settled_by_watchdog`; accuracy remains unverified. Earlier failed runs below are retained as history.
+
 ## New v3 attempt — 27 September 2026, 03:54 UTC
 
 - Uploaded `raahi-domain-v3.txt` as `document_01m3gfs56bh2xtc9`; the document API reports **READY**.
