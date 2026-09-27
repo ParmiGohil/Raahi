@@ -10,7 +10,7 @@ import { WeatherMap, WeatherConnections } from './weather-visuals';
 const normal: WeatherInput = { rain: 0, wind: 10, temperature: 28, hours: 1 };
 const extreme: WeatherInput = { rain: 40, wind: 75, temperature: 30, hours: 3 };
 const dateLabel = (value: string) => new Date(value).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-export function WeatherTwin({ bookings: savedBookings }: { bookings: Segment[] }) {
+export function WeatherTwin({ bookings: savedBookings, fixtureContext = false }: { bookings: Segment[]; fixtureContext?: boolean }) {
   const [demoDate, setDemoDate] = useState<number | null>(null);
   const bookings = useMemo(() => demoDate ? redateDemo(baseline(), demoDate) : savedBookings, [demoDate, savedBookings]);
   const [placeId, setPlaceId] = useState<string>('goi');
@@ -40,12 +40,12 @@ export function WeatherTwin({ bookings: savedBookings }: { bookings: Segment[] }
   const signature = JSON.stringify([bookings, selected?.id, placeId, mode, mode === 'Booking-time forecast' ? null : effective]);
   const result = shown && !forecastMissing && shown.signature === signature ? simulateWeather(bookings, shown.id, mode === 'Booking-time forecast' && matching ? effective : shown.input) : null;
   const uncertainty = result && mode === 'Booking-time forecast' ? ensembleImpact(bookings, shown!.id, snapshot?.members ?? []) : null;
-  const insightSignature = result ? JSON.stringify([signature, effective]) : '';
+  const insightSignature = result ? JSON.stringify([signature, effective, fixtureContext && !demoDate]) : '';
   useEffect(() => {
     if (!insightSignature || !selected) return;
     const controller = new AbortController();
     setInsight(null);
-    fetch('/api/weather/insight', { method:'POST', signal:controller.signal, headers:{'Content-Type':'application/json'}, body:JSON.stringify({kind:selected.kind,weather:effective,source:mode === 'Booking-time forecast' ? 'forecast' : 'hypothetical'}) })
+    fetch('/api/weather/insight', { method:'POST', signal:controller.signal, headers:{'Content-Type':'application/json'}, body:JSON.stringify({kind:selected.kind,weather:effective,source:mode === 'Booking-time forecast' ? 'forecast' : 'hypothetical',...(fixtureContext && !demoDate ? {fixtureBookingId:selected.id,placeId} : {})}) })
       .then(r=>r.json()).then(value=>setInsight({signature:insightSignature,text:value.insight ? `Nugen assessment (${value.insight.risk} exposure): ${value.insight.explanation} ${value.insight.action} ${value.insight.limitations}` : value.message ?? value.error}))
       .catch(e=>{if(e.name !== 'AbortError') setInsight({signature:insightSignature,text:'AI assessment unavailable. Rules-based preview only.'});});
     return ()=>controller.abort();

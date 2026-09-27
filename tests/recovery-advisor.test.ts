@@ -42,6 +42,16 @@ describe('isolated Nugen recovery advisory', () => {
     expect((await advisor(withProfile, recoveryForState(state), config)).reason).toBe('cached');
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(JSON.stringify(fetcher.mock.calls)).not.toContain('Private Name');
+    const called = fetcher.mock.calls[0] as unknown as Parameters<typeof fetch>;
+    const request = JSON.parse(String(called[1]?.body));
+    const context = JSON.parse(request.messages[1].content);
+    expect(context.task).toBe('RECOVERY_EXPLANATION');
+    expect(context.bookings.some((booking: {id:string; requires:string[]}) => booking.id === 'transfer' && booking.requires.includes('exit'))).toBe(true);
+    expect(context.impacts.some((impact: {bookingId:string; state:string}) => impact.bookingId === 'transfer' && impact.state !== 'unaffected')).toBe(true);
+    expect(context.options.some((option: {id:string; cashNowPaise:number}) => option.id === 'original' && option.cashNowPaise === 230000)).toBe(true);
+    expect(context.disruptions).toContainEqual({bookingId:'flight',type:'delay',minutes:180});
+    expect(context.bookings.find((booking: {id:string}) => booking.id === 'event').fixedTime).toBe(true);
+    expect(JSON.stringify(context)).not.toMatch(/Private Name|private@example|"reference"|"evidence"|DEMO-SG201/);
     expect(JSON.stringify(withProfile)).toBe(before);
   });
   it('completes disruption → failed provider → valid plan → apply → persisted graph', async () => {

@@ -14,7 +14,15 @@ const booking = z.object({
   windowStart: date.optional(), windowEnd: date.optional(), evidence: z.string().max(300), available: z.boolean().nullable(),
 }).refine(s => Date.parse(s.end) >= Date.parse(s.start), 'End must follow start');
 export const commandSchema = z.discriminatedUnion("action", [
-  z.object({ action: z.literal('profile'), expectedRevision: revision, profile: z.object({ name: z.string().max(80), email: z.union([z.email(), z.literal('')]), city: z.string().max(80), travelStyle: z.string().max(80) }) }),
+  z.object({ action: z.literal('profile'), expectedRevision: revision, profile: z.object({
+    name: z.string().max(80), email: z.union([z.email(), z.literal('')]), city: z.string().max(80), travelStyle: z.string().max(80),
+    recoveryPriority: z.enum(['', 'Lower cost', 'More rest', 'Keep experiences', 'Fewer changes']).optional(),
+    travelPace: z.enum(['', 'Relaxed', 'Balanced', 'Active']).optional(),
+    transportPreference: z.enum(['', 'Public transport', 'Private transfers', 'Walking']).optional(),
+    stayPreference: z.enum(['', 'Budget stays', 'Comfort stays', 'Quiet stays', 'Central location']).optional(),
+    interests: z.array(z.enum(['Beaches', 'Food', 'Culture', 'Nature', 'Music', 'Shopping'])).max(3).optional(),
+    travelNotes: z.string().max(160).optional(),
+  }) }),
   z.object({ action: z.literal('itinerary'), expectedRevision: revision, bookings: z.array(booking).max(100) }),
   z.object({ action: z.literal('disruption'), expectedRevision: revision, disruption: z.object({ bookingId: z.string().max(80), type: z.enum(['delay', 'cancelled', 'late-checkin', 'unavailable', 'traveler-change']), minutes: z.number().int().min(0).max(1440) }).nullable() }),
   z.object({

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import './product.css';
+import './profile.css';
 import { ProductShell } from '../components/product-shell';
 export const metadata: Metadata = {
   title: "Raahi · A way forward",

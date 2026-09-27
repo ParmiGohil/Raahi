@@ -10,7 +10,7 @@ async function get(path) {
  return response.json();
 }
 const list=await get('alignment-projects/list');
-const rows=Array.isArray(list.alignment_projects)?list.alignment_projects.filter(p=>p.alignment_name?.startsWith('raahi-weather-twin')):[];
+const rows=Array.isArray(list.alignment_projects)?list.alignment_projects.filter(p=>p.alignment_name?.toLowerCase().startsWith('raahi')):[];
 const projects=[];
 for(const row of rows) {
  const detail=await get(`alignment-projects/${encodeURIComponent(row.alignment_id)}`);

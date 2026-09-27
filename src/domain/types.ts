@@ -79,8 +79,20 @@ export type HistoryEntry = {
   after: Segment[];
   actions: string[];
 };
+export type TravelerProfile = {
+  name: string;
+  email: string;
+  city: string;
+  travelStyle: string;
+  recoveryPriority?: '' | 'Lower cost' | 'More rest' | 'Keep experiences' | 'Fewer changes';
+  travelPace?: '' | 'Relaxed' | 'Balanced' | 'Active';
+  transportPreference?: '' | 'Public transport' | 'Private transfers' | 'Walking';
+  stayPreference?: '' | 'Budget stays' | 'Comfort stays' | 'Quiet stays' | 'Central location';
+  interests?: Array<'Beaches' | 'Food' | 'Culture' | 'Nature' | 'Music' | 'Shopping'>;
+  travelNotes?: string;
+};
 export type TripState = {
-  profile?: { name: string; email: string; city: string; travelStyle: string };
+  profile?: TravelerProfile;
   mode?: "demo" | "personal";
   bookings?: Segment[];
   disruption?: Disruption | null;

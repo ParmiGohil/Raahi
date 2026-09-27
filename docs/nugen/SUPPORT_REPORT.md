@@ -1,5 +1,14 @@
 # Nugen integration blocker — 27 September 2026, 01:04 UTC
 
+## New v3 attempt — 27 September 2026, 03:54 UTC
+
+- Uploaded `raahi-domain-v3.txt` as `document_01m3gfs56bh2xtc9`; the document API reports **READY**.
+- Alignment `alignment_01m3gft2vxdenmv0` using `llama-v3p2-3b-reasoning` reports **FAILED**, progress **0**, no model ID.
+- Exact error: `Finetuning failed: Nugen job creation failed: HTTP 502 Bad Gateway`.
+- Stage failures: `training_data_upload: outcome_unknown`; `training: finetuning_failure`.
+- Authentication and account reads work, and the account still lists zero aligned models. This repeats the prior upstream failure after changing the domain document and runtime-context examples. No new training run or inference probe was started during this diagnostic check.
+- Ask Nugen/organisers to inspect this alignment ID and the provider-side job-creation log, confirm the training-data upload outcome, and advise when retrying is safe. A locally revised document cannot repair an upstream 502.
+
 Project: Raahi / HackCelestial PILLAIUNIV2026. No secrets included.
 
 ## Verified working
