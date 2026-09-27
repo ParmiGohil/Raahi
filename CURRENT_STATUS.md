@@ -1,5 +1,11 @@
 # Current Raahi status
 
+## Hosted Nugen incident and safe availability check — 27 September 2026, 11:58 IST
+
+Production is https://raahi-green.vercel.app. At 11:53 IST Nugen's authenticated API reported the previously READY alignment `alignment_01m3gn4p5039dq4r` as FAILED: its internal batch evaluation returned HTTP 502. Model `model_01m3gn6n5dnptvhh` subsequently reports UNDEPLOYED. A deployment POST was accepted but the model remained UNDEPLOYED. A fresh local aligned request timed out, streaming opened then disconnected without a usable answer, and the text base-model probe timed out. The model-specific URL shown in Nugen's dashboard returned 404; the documented generic chat endpoint remains configured. This supersedes earlier local success as a statement of current availability.
+
+Added a bounded server-side deployment-status check to both advisory routes. Undeployed/unreachable models return the existing simulation or explicit weather-unavailable message promptly, with availability checked again after five seconds. Only DEPLOYED permits live inference; core recovery, copilot, itinerary and dependency calculations are unchanged. No new training or paid purchase. All 49 tests passed locally; deployment verification is recorded after release.
+
 ## Nugen aligned model connected locally — 27 September 2026, 11:15 IST
 
 Nugen API verified alignment `alignment_01m3gn4p5039dq4r` READY at 100% and model `model_01m3gn6n5dnptvhh` DEPLOYED. The provider reports that its automatic evaluation never ran, so no accuracy claim is made. A real weather advisory returned through Raahi's server route. A real recovery advisory was also verified in a fresh demo session: disruption → Nugen explanation → engine-checked ₹2,300 option under ₹2,500 → applied nine-booking itinerary. The copilot remains explicitly simulated; Nugen explains the engine's result and never creates or applies plans. An earlier live recovery probe misread paise as rupees; current output instructions prohibit monetary claims and the adapter rejects them. Invalid/unavailable model output falls back to the existing simulation.

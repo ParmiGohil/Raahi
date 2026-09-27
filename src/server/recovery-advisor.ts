@@ -5,7 +5,7 @@ import { parseNugenJson } from './nugen-json';
 export type Advisory = { source: 'nugen' | 'simulation'; reason: string; message: string; revision: number };
 type Config = { enabled?: string; key?: string; model?: string; alignment?: string };
 // No repository access: explanations cannot create or apply recovery plans.
-export function createRecoveryAdvisor(fetcher: typeof fetch = fetch, timeoutMs = 30000) {
+export function createRecoveryAdvisor(fetcher: typeof fetch = fetch, timeoutMs = 20000) {
   let blockedUntil = 0, inFlight = false;
   const cache = new Map<string, { at: number; message: string }>();
   return async (state: TripState, recovery: Recovery, config: Config): Promise<Advisory> => {
